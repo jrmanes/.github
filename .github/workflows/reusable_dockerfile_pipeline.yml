@@ -12,8 +12,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  MAINTAINER: CelestiaOrg
-  DESCRIPTION: CelestiaOrg repository ${{ github.repository }}
+  MAINTAINER: ${{ github.repository_owner }}
+  DESCRIPTION:  repository ${{ github.repository }}
 
 jobs:
   docker-security:
