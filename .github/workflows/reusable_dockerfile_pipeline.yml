@@ -13,7 +13,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   MAINTAINER: ${{ github.repository_owner }}
-  DESCRIPTION:  repository ${{ github.repository }}
+  DESCRIPTION: "${{ github.repository_owner }} repository ${{ github.repository }}"
 
 jobs:
   docker-security:
