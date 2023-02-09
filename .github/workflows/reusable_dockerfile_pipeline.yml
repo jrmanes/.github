@@ -49,8 +49,7 @@ jobs:
     # wait until the security scanner will be done
     needs: docker-security
     permissions:
-      #contents: write
-      contents: read
+      contents: write
       packages: write
 
     steps:
