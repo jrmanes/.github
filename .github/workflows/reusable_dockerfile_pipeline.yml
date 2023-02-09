@@ -81,6 +81,8 @@ jobs:
             type=raw,value={{sha}}
             # output v0.2.1
             type=semver,pattern=v{{version}}
+            # output v0.2.1-rc1
+            type=semver,pattern={{raw}}
             # pull request event
             type=ref,enable=true,prefix=pr-,suffix=,event=pr
 
