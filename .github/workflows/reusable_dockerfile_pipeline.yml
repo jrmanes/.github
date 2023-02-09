@@ -103,4 +103,5 @@ jobs:
           # yamllint enable
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.labels }}
           file: ${{ inputs.dockerfile }}
