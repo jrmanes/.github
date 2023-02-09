@@ -103,5 +103,5 @@ jobs:
           # yamllint enable
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=${{ env.DESCRIPTION }}
+          outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=${{ steps.meta.outputs.labels }}
           file: ${{ inputs.dockerfile }}
