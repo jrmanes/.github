@@ -11,10 +11,10 @@ jobs:
       - name: yaml-lint
         uses: ibiqlik/action-yamllint@v3
         with:
+          no_warnings: true
           config_data: |
             extends: default
             rules:
               line-length:
                 max: 120
                 level: warning
-              no_warnings: true
