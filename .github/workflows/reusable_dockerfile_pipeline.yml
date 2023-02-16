@@ -21,16 +21,15 @@ jobs:
       - name: Checkout
         uses: "actions/checkout@v3"
 
-      - name: Add SHORT_SHA to ENV
-        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-
-      - name: Github name to lowercase
-        # yamllint disable
-        run: echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-        # yamllint enable
+      - name: Add vars to ENV
+        run: |
+          echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+          # yamllint disable
+          run: echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          # yamllint enable
 
       - name: Build and Push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: false
           platforms: linux/amd64
@@ -70,11 +69,12 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Add SHORT_SHA to ENV
-        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-
-      - name: Github name to lowercase
-        run: echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Add vars to ENV
+        run: |
+          echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+          # yamllint disable
+          echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          # yamllint enable
 
       - name: Extract Docker Metadata
         id: meta
@@ -102,7 +102,7 @@ jobs:
       # We always build the image but we only push if we are on the `main`
       # branch or a versioned `v*` branch
       - name: Build and PushDocker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           platforms: linux/amd64,linux/arm64
           # yamllint disable
