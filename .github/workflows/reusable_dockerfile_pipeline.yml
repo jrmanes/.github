@@ -32,6 +32,10 @@ jobs:
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           echo "${{ inputs.imageName }}"
+          if [[ ${{ inputs.imageName }} != ${{ github.repository}} ]];then
+            echo "image defined is not the same as the registry"
+            echo "IMAGE_NAME=$(echo ${{ inputs.imageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          fi
           # yamllint enable
 
       - name: Build and Push
