@@ -34,7 +34,7 @@ jobs:
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
             echo "package name is not the same"
             echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-            echo "${{ env.IMAGE_NAME}}"
+            echo '${{ env.IMAGE_NAME}}'
           fi
           # yamllint enable
 
@@ -87,7 +87,7 @@ jobs:
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
             echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-            echo "${{ env.IMAGE_NAME}}"
+            echo '${{ env.IMAGE_NAME}}'
           fi
           # yamllint enable
 
