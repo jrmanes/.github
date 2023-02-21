@@ -31,7 +31,7 @@ jobs:
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          echo "${{ input.imageName }}"
+          echo "${{ inputs.imageName }}"
           # yamllint enable
 
       - name: Build and Push
