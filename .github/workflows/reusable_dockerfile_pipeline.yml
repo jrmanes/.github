@@ -22,11 +22,15 @@ env:
 jobs:
   docker-security:
     runs-on: "ubuntu-latest"
+    outputs:
+      output_short_sha: ${{ steps.setting_env.outputs.short_sha }}
+      output_image_name: ${{ steps.setting_env.outputs.image_name }}
     steps:
       - name: Checkout
         uses: "actions/checkout@v3"
 
       - name: Add vars to ENV
+        id: setting_env
         run: |
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           # yamllint disable
@@ -36,6 +40,8 @@ jobs:
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
             echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           fi
+          echo "short_sha=${{ env.SHORT_SHA }}" >> "$GITHUB_OUTPUT"
+          echo "image_name=${{ env.IMAGE_NAME}}" >> "$GITHUB_OUTPUT"
           # yamllint enable
 
       - name: Build and Push
@@ -70,6 +76,10 @@ jobs:
       packages: write
 
     steps:
+      - env:
+          OUTPUT_SHORT_SHA: ${{ needs.docker-security.outputs.output_short_sha }}
+          OUTPUT_IMAGE_NAME: ${{ needs.docker-security.outputs.output_image_name }}
+
       - name: Checkout
         uses: "actions/checkout@v3"
 
@@ -82,14 +92,25 @@ jobs:
 
       - name: Add vars to ENV
         run: |
-          echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-          # yamllint disable
-          echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          # here we validate if we have specified a different package name in
-          # the inputs, if so, we change the package to it.
-          if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
-            echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          fi
+          echo "------------------------"
+          echo "$OUTPUT_SHORT_SHA"
+          echo "$OUTPUT_IMAGE_NAME"
+          echo "------------------------"
+          echo "${{ env.OUTPUT_SHORT_SHA}}"
+          echo "${{ env.OUTPUT_IMAGE_NAME}}"
+          echo "------------------------"
+          echo "${{ env.SHORT_SHA}}"
+          echo "${{ env.IMAGE_NAME}}"
+          echo "------------------------"
+
+          #echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+          ## yamllint disable
+          #echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          ## here we validate if we have specified a different package name in
+          ## the inputs, if so, we change the package to it.
+          #if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
+          #  echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          #fi
           # yamllint enable
 
       - name: Extract Docker Metadata
