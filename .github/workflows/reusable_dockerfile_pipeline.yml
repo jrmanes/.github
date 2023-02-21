@@ -43,7 +43,7 @@ jobs:
             # validate the input package name characters
             if [[ ! "${{ inputs.packageName }}" =~ ^[A-Za-z0-9\-]+$ ]]; then
               echo "------------------------------------------------------------"
-              echo "ERROR: Package name not valid! [${{ inputs.packageName }}]"
+              echo "ERROR: Package name not valid! => [ ${{ inputs.packageName }} ]"
               echo "ONLY can use: A-Za-z0-9\-"
               echo "------------------------------------------------------------"
               exit 1
