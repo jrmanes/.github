@@ -104,12 +104,12 @@ jobs:
           OUTPUT_SHORT_SHA: ${{ needs.docker-security.outputs.output_short_sha }}
           OUTPUT_IMAGE_NAME: ${{ needs.docker-security.outputs.output_image_name }}
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.OUTPUT_IMAGE_NAME }}
           # yamllint disable
           labels: |
             maintainer=${{ env.MAINTAINER }}
             commitUrl=https://github.com/${{ github.repository }}/commit/${{ github.sha }}
-            dockerPull=docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.SHORT_SHA }}
+            dockerPull=docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.OUTPUT_SHORT_SHA }}
             org.opencontainers.image.description=${{ env.DESCRIPTION }}
           tags: |
             # output minimal (short sha)
