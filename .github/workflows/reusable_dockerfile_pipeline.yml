@@ -32,6 +32,7 @@ jobs:
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
+            echo "package name is not the same"
             echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
             echo "$IMAGE_NAME"
           fi
