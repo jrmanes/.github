@@ -41,7 +41,7 @@ jobs:
           # the inputs, if so, we change the package to it.
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
             # validate the input package name characters
-            if [[ "${{ inputs.packageName }}" =~ ^[A-Za-z0-9\-]+$ ]]; then
+            if [[ ! "${{ inputs.packageName }}" =~ ^[A-Za-z0-9\-]+$ ]]; then
               echo "------------------------------------------------------------"
               echo "ERROR: Package name not valid! ONLY can use: A-Za-z0-9\-"
               echo "------------------------------------------------------------"
