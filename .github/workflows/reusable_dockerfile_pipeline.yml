@@ -8,7 +8,7 @@ on:
         type: string
         description: "Path to Dockerfile"
         default: "Dockerfile"
-      imageName:
+      packageName:
         required: false
         type: string
         description: "If you want to specify the Docker Image Name"
@@ -31,8 +31,9 @@ jobs:
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          if [[ ${{ inputs.imageName }} != ${{ github.repository}} ]];then
-            echo "IMAGE_NAME=$(echo ${{ inputs.imageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
+            echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+            echo "$IMAGE_NAME"
           fi
           # yamllint enable
 
@@ -83,8 +84,9 @@ jobs:
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          if [[ ${{ inputs.imageName }} != ${{ github.repository}} ]];then
-            echo "IMAGE_NAME=$(echo ${{ inputs.imageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
+            echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+            echo "$IMAGE_NAME"
           fi
           # yamllint enable
 
