@@ -8,6 +8,11 @@ on:
         type: string
         description: "Path to Dockerfile"
         default: "Dockerfile"
+      imageName:
+        required: false
+        type: string
+        description: "If you want to specify the Docker Image Name"
+        default: "${{ github.repository }}"
 
 env:
   REGISTRY: ghcr.io
@@ -26,6 +31,7 @@ jobs:
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "${{ input.imageName }}"
           # yamllint enable
 
       - name: Build and Push
