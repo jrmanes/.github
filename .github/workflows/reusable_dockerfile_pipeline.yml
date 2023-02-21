@@ -76,10 +76,6 @@ jobs:
       packages: write
 
     steps:
-      - env:
-          OUTPUT_SHORT_SHA: ${{ needs.docker-security.outputs.output_short_sha }}
-          OUTPUT_IMAGE_NAME: ${{ needs.docker-security.outputs.output_image_name }}
-
       - name: Checkout
         uses: "actions/checkout@v3"
 
@@ -91,6 +87,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add vars to ENV
+        env:
+          OUTPUT_SHORT_SHA: ${{ needs.docker-security.outputs.output_short_sha }}
+          OUTPUT_IMAGE_NAME: ${{ needs.docker-security.outputs.output_image_name }}
         run: |
           echo "------------------------"
           echo "$OUTPUT_SHORT_SHA"
@@ -116,6 +115,9 @@ jobs:
       - name: Extract Docker Metadata
         id: meta
         uses: docker/metadata-action@v4
+        env:
+          OUTPUT_SHORT_SHA: ${{ needs.docker-security.outputs.output_short_sha }}
+          OUTPUT_IMAGE_NAME: ${{ needs.docker-security.outputs.output_image_name }}
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           # yamllint disable
