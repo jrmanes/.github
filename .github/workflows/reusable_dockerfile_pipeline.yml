@@ -31,11 +31,13 @@ jobs:
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          # here we validate if we have specified a different name in the
+          # inputs, if so, we change the package name to publish the artifact
+          # to the right one.
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
-            echo "package name is not the same"
             echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-            echo '${{ env.IMAGE_NAME}}'
           fi
+          echo ${{ env.IMAGE_NAME }}
           # yamllint enable
 
       - name: Build and Push
@@ -85,9 +87,11 @@ jobs:
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          # here we validate if we have specified a different name in the
+          # inputs, if so, we change the package name to publish the artifact
+          # to the right one.
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
             echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-            echo '${{ env.IMAGE_NAME}}'
           fi
           # yamllint enable
 
