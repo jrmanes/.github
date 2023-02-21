@@ -52,6 +52,16 @@ jobs:
       - name: Checkout
         uses: "actions/checkout@v3"
 
+      - name: Add vars to ENV
+        env:
+          OUTPUT_SHORT_SHA: ${{ needs.prepare-env.outputs.output_short_sha }}
+          OUTPUT_IMAGE_NAME: ${{ needs.prepare-env.outputs.output_image_name }}
+        run: |
+          echo "------------------------"
+          echo "${{ env.OUTPUT_SHORT_SHA }}"
+          echo "${{ env.OUTPUT_IMAGE_NAME }}"
+          echo "------------------------"
+
       - name: Build and Push
         uses: docker/build-push-action@v4
         env:
