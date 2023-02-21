@@ -32,7 +32,7 @@ jobs:
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           # here we validate if we have specified a different package name in
-          # the inputs, if so, we change the package to the right one.
+          # the inputs, if so, we change the package to it.
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
             echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           fi
@@ -86,7 +86,7 @@ jobs:
           # yamllint disable
           echo "IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           # here we validate if we have specified a different package name in
-          # the inputs, if so, we change the package to the right one.
+          # the inputs, if so, we change the package to it.
           if [[ ${{ inputs.packageName }} != ${{ github.repository}} ]];then
             echo "IMAGE_NAME=$(echo ${{ github.repository_owner }}/${{ inputs.packageName }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
           fi
