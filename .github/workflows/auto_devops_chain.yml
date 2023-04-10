@@ -26,3 +26,4 @@ jobs:
           git clone https://github.com/celestiaorg/argocd-apps
           cd argocd-apps
           ls -ltra ./
+          ./scripts/auto_robusta_chain.sh "${{ github.event.inputs.chain-id }}
