@@ -18,7 +18,9 @@ jobs:
       - name: Checkout
         uses: "actions/checkout@v3"
       - name: Configure git
-        run: git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        run: |
+          git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git clone https://github.com/celestiaorg/argocd-apps
       - name: Clone Repo
         run: |
           gh repo clone https://github.com/celestiaorg/argocd-apps
