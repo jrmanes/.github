@@ -1,0 +1,19 @@
+name: AutoGenerate
+
+on:
+  workflow_dispatch:
+    inputs:
+      chain-id:
+        required: true
+        type: string
+        description: Name of the new Chain-id
+
+jobs:
+   auto-gen:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v3"
+          
+      - name: print
+        run: echo "${{ github.event.inputs.chain-id }}
