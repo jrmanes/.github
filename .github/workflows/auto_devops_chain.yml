@@ -13,11 +13,14 @@ jobs:
     runs-on: "ubuntu-latest"
     env:
       GH_TOKEN: ${{ github.token }}
+      TOKEN: ${{ secrets.ACCESS_TOKEN }}
     steps:
       - name: Checkout
         uses: "actions/checkout@v3"
+      - name: Configure git
+        run: git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
       - name: Clone Repo
         run: |
-          gh repo clone https://github.com/celestiaorg/argocd-apps.git
+          gh repo clone https://github.com/celestiaorg/argocd-apps
           cd argocd-apps
           ls -ltra ./
