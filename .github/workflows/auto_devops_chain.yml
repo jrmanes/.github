@@ -1,4 +1,4 @@
-name: AutoGenerate
+name: Auto DevOps
 
 on:
   workflow_dispatch:
@@ -7,9 +7,17 @@ on:
         required: true
         type: string
         description: Name of the new Chain-id
+      app_version:
+        required: true
+        type: string
+        description: Celestia App Image Version
+      node_version:
+        required: true
+        type: string
+        description: Celestia Node Image Version
 
 jobs:
-   auto-gen:
+   argocd-apps:
     runs-on: "ubuntu-latest"
     env:
       GH_TOKEN: ${{ github.token }}
