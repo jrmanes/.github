@@ -45,3 +45,5 @@ jobs:
           ls -ltra ./overlays/robusta/patches/
           git status
           git branch
+          cat overlays/robusta/patches/kustomization.yaml
+          cat overlays/robusta/patches/celestia-stack-internal-${{ github.event.inputs.chain-id }}-1-applicationset.yaml
