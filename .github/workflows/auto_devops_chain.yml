@@ -38,7 +38,10 @@ jobs:
           #gh repo clone https://github.com/celestiaorg/argocd-apps
           git clone https://github.com/celestiaorg/argocd-apps
           cd argocd-apps
+          git checkout -b autodevops/${{ github.event.inputs.chain-id }}
           ls -ltra ./
           echo "chain-id: [${{ github.event.inputs.chain-id }}]"
           ./scripts/auto_robusta_chain.sh ${{ github.event.inputs.chain-id }}
           ls -ltra ./overlays/robusta/patches/
+          git status
+          git branch
