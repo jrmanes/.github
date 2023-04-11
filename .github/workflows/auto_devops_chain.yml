@@ -25,6 +25,11 @@ jobs:
     steps:
       - name: Checkout
         uses: "actions/checkout@v3"
+      - name: Print inputs
+        run: |
+          echo "chain-id: [${{ github.event.inputs.chain-id }}]"
+          echo "app_version: [${{ github.event.inputs.app_version }}]"
+          echo "node_version: [${{ github.event.inputs.node_version }}]"
       - name: Configure git
         run: |
           git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
