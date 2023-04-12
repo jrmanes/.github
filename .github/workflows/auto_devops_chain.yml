@@ -61,6 +61,8 @@ jobs:
           git add .
           git commit -m "Resources added for the new Chain-id added: [${{ github.event.inputs.chain-id }}]"
           git push origin autodevops/${{ github.event.inputs.chain-id }}
+      - name: Authenticate with GitHub
+        run: gh auth login --with-token <<< "${GITHUB_TOKEN}"
       - name: Create pull request
         run: |
           # Create a pull request using GH CLI
