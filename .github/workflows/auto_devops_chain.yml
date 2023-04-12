@@ -16,13 +16,11 @@ on:
         type: string
         description: Celestia Node Image Version
 
-permissions:
-  contents: write
-  packages: write
-  pull-request: write
-
 jobs:
    argocd-apps:
+    permissions:
+      contents: write
+      pull_request: write
     runs-on: "ubuntu-latest"
     env:
       GH_TOKEN: ${{ github.token }}
