@@ -48,6 +48,7 @@ jobs:
           echo "chain-id: [${{ github.event.inputs.chain-id }}]"
       - name: Run scripts
         run: |
+          cd argocd-apps
           ./scripts/auto_robusta_chain.sh ${{ github.event.inputs.chain-id }}
           echo "-----------------------------"
           ls -ltra ./overlays/robusta/patches/
