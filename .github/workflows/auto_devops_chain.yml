@@ -63,7 +63,7 @@ jobs:
           git push origin autodevops/${{ github.event.inputs.chain-id }}
       - name: Authenticate with GitHub
         run: |
-          echo "${{ secrets.ACCESS_TOKEN }}" | gh auth login --with-token
+          echo "${{ env.TOKEN }}" | gh auth login --with-token
       - name: Create pull request
         run: |
           # Create a pull request using GH CLI
