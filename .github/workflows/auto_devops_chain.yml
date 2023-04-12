@@ -64,7 +64,9 @@ jobs:
       - name: Authenticate with GitHub
         run: |
           unset GH_TOKEN
-          gh auth login
+          #gh auth login
+          echo ${{ secrets.MY_CUSTOM_TOKEN }} > gh_token.txt
+          gh auth login --with-token < gh_token.txt
           gh status
           #gh auth login <<< "${{ env.GH_TOKEN }}"
       - name: Create pull request
