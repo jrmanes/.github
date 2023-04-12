@@ -33,16 +33,21 @@ jobs:
       - name: Configure git
         run: |
           git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global user.email "devops@celestia.org"
+          git config --global user.name "autodevops"
       - name: Clone Repo
         run: |
           #gh repo clone https://github.com/celestiaorg/argocd-apps
           git clone https://github.com/celestiaorg/argocd-apps
           cd argocd-apps
           git checkout -b autodevops/${{ github.event.inputs.chain-id }}
+          echo "-----------------------------"
           ls -ltra ./
           echo "chain-id: [${{ github.event.inputs.chain-id }}]"
           ./scripts/auto_robusta_chain.sh ${{ github.event.inputs.chain-id }}
+          echo "-----------------------------"
           ls -ltra ./overlays/robusta/patches/
+          echo "-----------------------------"
           git status
           git branch
           cat overlays/robusta/patches/kustomization.yaml
