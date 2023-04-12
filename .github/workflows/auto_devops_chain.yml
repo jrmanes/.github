@@ -52,15 +52,14 @@ jobs:
           cd ${{ env.REPO_NAME }}
           ./scripts/auto_robusta_chain.sh ${{ github.event.inputs.chain-id }}
           echo "-----------------------------"
-          ls -ltra ./overlays/robusta/patches/
-          echo "-----------------------------"
       - name: Commit & Push the new resources
         run: |
           cd ${{ env.REPO_NAME }}
-          git status
           git branch
-          cat overlays/robusta/patches/kustomization.yaml
-          cat overlays/robusta/patches/celestia-stack-internal-${{ github.event.inputs.chain-id }}-*.yaml
           git add .
           git commit -m "Resources added for the new Chain-id added: [${{ github.event.inputs.chain-id }}]"
           git push origin autodevops/${{ github.event.inputs.chain-id }}
+      - name: Create pull request
+        run: |
+          # Create a pull request using GH CLI
+          gh pr create --base main --head autodevops/${{ github.event.inputs.chain-id }} --title "AutoDevOps: chain-id -> [${{ github.event.inputs.chain-id }}]" --body "Testing PR"
