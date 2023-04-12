@@ -21,7 +21,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-      pull_request: write
+      pull-request: write
     runs-on: "ubuntu-latest"
     env:
       GH_TOKEN: ${{ github.token }}
