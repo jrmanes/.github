@@ -71,7 +71,12 @@ jobs:
           #    #gh auth login <<< "${{ env.GH_TOKEN }}"
       - name: Create pull request
         run: |
+          cd ${{ env.REPO_NAME }}
           # Create a pull request using GH CLI
-          gh pr create --base main --head autodevops/${{ github.event.inputs.chain-id }} --title "AutoDevOps: chain-id -> [${{ github.event.inputs.chain-id }}]" --body "Testing PR"
+          gh pr create --base main \
+                       --head autodevops/${{ github.event.inputs.chain-id }} \
+                       --title "AutoDevOps: chain-id -> [${{ github.event.inputs.chain-id }}]" \
+                       --body "Testing PR" \
+                       --repo https://github.com/celestiaorg/${{ env.REPO_NAME }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
