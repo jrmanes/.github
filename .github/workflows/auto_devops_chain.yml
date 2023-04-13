@@ -16,6 +16,10 @@ on:
         type: string
         description: Celestia Node Image Version
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
    argocd-apps:
     permissions:
@@ -23,7 +27,7 @@ jobs:
     runs-on: "ubuntu-latest"
     env:
       GH_TOKEN: ${{ github.token }}
-      TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      #TOKEN: ${{ secrets.ACCESS_TOKEN }}
       REPO_NAME: "argocd-apps"
     steps:
       - name: Checkout
@@ -35,13 +39,17 @@ jobs:
           echo "node_version: [${{ github.event.inputs.node_version }}]"
       - name: Configure git
         run: |
-          git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
           git config --global user.email "devops@celestia.org"
           git config --global user.name "autodevops"
+      - name: Checkout
+        uses: "actions/checkout@v3"
       - name: Clone Repo
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           #gh repo clone https://github.com/celestiaorg/argocd-apps
-          git clone https://github.com/celestiaorg/${{ env.REPO_NAME }}
+          git clone https://github.com/celestiaorg/${{ env.REPO_NAME }}.git
       - name: Create the branch
         run: |
           cd ${{ env.REPO_NAME }}
@@ -79,4 +87,4 @@ jobs:
                        --body "Testing PR" \
                        --repo https://github.com/celestiaorg/${{ env.REPO_NAME }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
