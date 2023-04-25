@@ -14,10 +14,13 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: List files in the repository
+      - name: Clones the repo
         run: |
           ls ${{ github.workspace }}
           git clone ${{ env.REPO_TG }}
+
+      - name: Build TestGround
+        run: |
           cd testground
           make install       # builds testground and the Docker image, used by the local:docker runner.
           testground -h
@@ -25,4 +28,8 @@ jobs:
           #testground plan import --from ./plans/network
           #testground run single --plan=network --testcase=ping-pong \
           #--builder=docker:go --runner=local:docker \
-          #                        --instances=2
+
+      - name: Build TestGround
+        run: |
+          cd testground
+          testground -h
