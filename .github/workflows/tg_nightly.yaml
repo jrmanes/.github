@@ -25,7 +25,6 @@ jobs:
         run: |
           cd testground
           make goinstall # builds testground and the Docker image, used by the local:docker runner.
-          which testground
 
           #- name: Build TestGround
           #  run: |
