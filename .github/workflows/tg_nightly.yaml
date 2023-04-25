@@ -1,0 +1,28 @@
+name: TestGround Nightly
+
+on:
+  push:
+    branches:
+      - 'main'
+
+env:
+  REPO_TG: https://github.com/testground/testground.git
+ 
+jobs:
+  prepare-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+          git clone ${{ env.REPO_TG }}
+          cd testground
+          make install       # builds testground and the Docker image, used by the local:docker runner.
+          testground -h
+          testground daemon  # will start the daemon listening on localhost:8042 by default.
+          #testground plan import --from ./plans/network
+          #testground run single --plan=network --testcase=ping-pong \
+          #--builder=docker:go --runner=local:docker \
+          #                        --instances=2
