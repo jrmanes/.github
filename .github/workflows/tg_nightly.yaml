@@ -84,7 +84,7 @@ jobs:
           echo "-----------------------------------------"
           $GOBIN/testground daemon &
           echo "-----------------------------------------"
-          $GOBIN/testground run composition -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
+          $GOBIN/testground run composition -f ./compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
           echo "-----------------------------------------"
           cat tg_run.log
           echo "-----------------------------------------"
