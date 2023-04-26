@@ -7,6 +7,7 @@ on:
 
 env:
   REPO_TG: https://github.com/testground/testground.git
+  REPO_TEST_TG: https://github.com/celestiaorg/test-infra.git
   ORG: celestiaorg
   BRANCH: main
   TG_USER: ga-bot
@@ -19,8 +20,14 @@ jobs:
         uses: actions/checkout@v3
       - name: Clone the repo
         run: |
+          echo "-----------------------------------------"
           ls ${{ github.workspace }}
+          echo "-----------------------------------------"
           git clone ${{ env.REPO_TG }}
+          git clone ${{ env.REPO_TEST_TG }}
+          echo "-----------------------------------------"
+          ls ${{ github.workspace }}
+          echo "-----------------------------------------"
 
       - name: Build TestGround
         run: |
@@ -53,6 +60,7 @@ jobs:
 
       - name: Print Go Env Vars
         run: |
+          cat ~/.config/testground/.env.toml
           export GOBIN=$(go env GOPATH)/bin
           mkdir -p $GOBIN
           echo "-----------------------------------------"
