@@ -89,9 +89,15 @@ jobs:
           cd test-infra
           ls ./
           echo "-----------------------------------------"
-          echo "-----------------------------------------"
           CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/celestia-node/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
           echo $CELESTIA_NODE
+          echo "-----------------------------------------"
+          ls -ltra ./
+          echo "-----------------------------------------"
+          sed -i "s|github.com/celestiaorg/celestia-node.*|github.com/celestiaorg/celestia-node ${CELESTIA_NODE}|g" go.mod
+          cat go.mod
+          echo "-----------------------------------------"
+
 
           #which testground
           #./$GOBIN/testground -h
