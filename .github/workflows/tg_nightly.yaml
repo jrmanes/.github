@@ -85,12 +85,12 @@ jobs:
           echo "-----------------------------------------"
           ls -ltra /home/runner/.config/testground/plans/
           echo "-----------------------------------------"
-          ls -ltra /home/runner/.config/testground/plans/celestia
+          ls -ltra /home/runner/.config/testground/plans/${{ env.TG_USER }}
           echo "-----------------------------------------"
           $GOBIN/testground daemon &
           sleep 3
           echo "-----------------------------------------"
-          $GOBIN/testground run composition -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
+          $GOBIN/testground run composition --plan=${{ env.TG_USER }} -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
           echo "-----------------------------------------"
           cat tg_run.log
           echo "-----------------------------------------"
