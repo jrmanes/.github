@@ -9,6 +9,7 @@ env:
   REPO_TG: https://github.com/testground/testground.git
   ORG: celestiaorg
   BRANCH: main
+  GOBIN: $(go env GOPATH)/bin
  
 jobs:
   prepare-env:
@@ -23,8 +24,15 @@ jobs:
 
       - name: Build TestGround
         run: |
-          export GOBIN=$(go env GOPATH)/bin
+          #export GOBIN=$(go env GOPATH)/bin
           mkdir -p $GOBIN
+          echo "-----------------------------------------"
+          echo $GOBIN
+          echo "-----------------------------------------"
+          go version
+          echo "-----------------------------------------"
+          go env
+          echo "-----------------------------------------"
           cd testground
           #make goinstall # builds testground and the Docker image, used by the local:docker runner.
           echo "-----------------------------------------"
@@ -38,7 +46,7 @@ jobs:
 
       - name: Print Go Env Vars
         run: |
-          export GOBIN=$(go env GOPATH)/bin
+          #export GOBIN=$(go env GOPATH)/bin
           mkdir -p $GOBIN
           echo "-----------------------------------------"
           echo $GOBIN
@@ -59,8 +67,8 @@ jobs:
           echo "-----------------------------------------"
           ls ./
           echo "-----------------------------------------"
-          testground
-          which testground
+          $GOBIN/testground
+          #which testground
           #./$GOBIN/testground -h
           #which testground
           #testground -h
