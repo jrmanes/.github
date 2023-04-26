@@ -42,7 +42,8 @@ jobs:
           ls -ltra ./
           echo "-----------------------------------------"
           cd
-          ln -s $GOBIN/testground testground
+          ln -s $GOBIN/testground /usr/bin/testground
+          ls -ltar /usr/bin
           echo "-----------------------------------------"
           go env
           echo $GOBIN
