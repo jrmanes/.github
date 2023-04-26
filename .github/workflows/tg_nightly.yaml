@@ -81,10 +81,16 @@ jobs:
           export GOBIN=$(go env GOPATH)/bin
           cd test-infra
           $GOBIN/testground plan import --from . --name ${{ env.TG_USER }}
+          ls -ltra /home/runner/.config/testground/
+          echo "-----------------------------------------"
+          ls -ltra /home/runner/.config/testground/plans/
+          echo "-----------------------------------------"
+          ls -ltra /home/runner/.config/testground/plans/celestia
           echo "-----------------------------------------"
           $GOBIN/testground daemon &
+          sleep 3
           echo "-----------------------------------------"
-          $GOBIN/testground run composition -f ./compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
+          $GOBIN/testground run composition -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
           echo "-----------------------------------------"
           cat tg_run.log
           echo "-----------------------------------------"
