@@ -29,22 +29,22 @@ jobs:
           ls ${{ github.workspace }}
           echo "-----------------------------------------"
 
-      - name: Build TestGround
-        run: |
-          export GOBIN=$(go env GOPATH)/bin
-          mkdir -p $GOBIN
-          cd testground
-          make goinstall
-          echo "-----------------------------------------"
-          go env
-          echo $GOBIN
-          echo "-----------------------------------------"
-          #make install # builds testground and the Docker image, used by the local:docker runner.
-          echo "-----------------------------------------"
-          ls -ltra ./
-          echo "-----------------------------------------"
-          pwd
-          echo "-----------------------------------------"
+          #- name: Build TestGround
+          #  run: |
+          #    export GOBIN=$(go env GOPATH)/bin
+          #    mkdir -p $GOBIN
+          #    cd testground
+          #    make goinstall
+          #    echo "-----------------------------------------"
+          #    go env
+          #    echo $GOBIN
+          #    echo "-----------------------------------------"
+          #    #make install # builds testground and the Docker image, used by the local:docker runner.
+          #    echo "-----------------------------------------"
+          #    ls -ltra ./
+          #    echo "-----------------------------------------"
+          #    pwd
+          #    echo "-----------------------------------------"
 
       - name: Generate Config TestGround
         run: |
@@ -58,31 +58,42 @@ jobs:
           EOF
           cat ~/.config/testground/.env.toml
 
-      - name: Print Go Env Vars
+          #- name: Print Go Env Vars
+          #  run: |
+          #    cat ~/.config/testground/.env.toml
+          #    export GOBIN=$(go env GOPATH)/bin
+          #    mkdir -p $GOBIN
+          #    echo "-----------------------------------------"
+          #    echo $GOBIN
+          #    echo "-----------------------------------------"
+          #    go version
+          #    echo "-----------------------------------------"
+          #    go env
+          #    echo "-----------------------------------------"
+          #    pwd
+          #    echo "-----------------------------------------"
+          #    ls ./
+          #    echo "-----------------------------------------"
+          #    ls -ltra $GOBIN
+          #    echo "-----------------------------------------"
+          #    cd testground
+          #    echo "-----------------------------------------"
+          #    pwd
+          #    echo "-----------------------------------------"
+          #    ls ./
+          #    echo "-----------------------------------------"
+          #    $GOBIN/testground
+
+      - name: Update the Celestia Node to last commit
         run: |
-          cat ~/.config/testground/.env.toml
-          export GOBIN=$(go env GOPATH)/bin
-          mkdir -p $GOBIN
-          echo "-----------------------------------------"
-          echo $GOBIN
-          echo "-----------------------------------------"
-          go version
-          echo "-----------------------------------------"
-          go env
-          echo "-----------------------------------------"
-          pwd
-          echo "-----------------------------------------"
+          cd test-infra
           ls ./
           echo "-----------------------------------------"
-          ls -ltra $GOBIN
-          echo "-----------------------------------------"
-          cd testground
-          echo "-----------------------------------------"
-          pwd
-          echo "-----------------------------------------"
-          ls ./
           echo "-----------------------------------------"
           $GOBIN/testground
+          CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/celestia-node/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
+          echo $CELESTIA_NODE
+
           #which testground
           #./$GOBIN/testground -h
           #which testground
