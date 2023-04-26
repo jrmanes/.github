@@ -26,14 +26,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Clone the repo
         run: |
-          echo "-----------------------------------------"
-          ls ${{ github.workspace }}
-          echo "-----------------------------------------"
           git clone ${{ env.REPO_TG }}
           git clone ${{ env.REPO_TEST_TG }}
-          echo "-----------------------------------------"
-          ls ${{ github.workspace }}
-          echo "-----------------------------------------"
 
       - name: Build TestGround
         run: |
@@ -41,14 +35,6 @@ jobs:
           mkdir -p $GOBIN
           cd testground
           make goinstall
-          echo "-----------------------------------------"
-          ls -ltra ./
-          echo "-----------------------------------------"
-          go env
-          echo $GOBIN
-          echo "-----------------------------------------"
-          pwd
-          echo "-----------------------------------------"
 
       - name: Generate Config TestGround
         run: |
@@ -62,38 +48,34 @@ jobs:
           EOF
           cat ~/.config/testground/.env.toml
 
-      - name: Update the Celestia Node to last commit
+      - name: Update go.mod with the latest Celestia Node commit
         run: |
           cd test-infra
-          ls ./
-          echo "-----------------------------------------"
           CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/${CELESTIA_NODE_REPO}/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
           echo $CELESTIA_NODE
-          echo "-----------------------------------------"
-          ls -ltra ./
-          echo "-----------------------------------------"
           sed -i "s|github.com/${ORG}/${CELESTIA_NODE_REPO}.*|github.com/${ORG}${CELESTIA_NODE_REPO} ${CELESTIA_NODE}|g" go.mod
-          cat go.mod
-          echo "-----------------------------------------"
 
       - name: Plan the execution
         run: |
           export GOBIN=$(go env GOPATH)/bin
           cd test-infra
-          $GOBIN/testground plan import --from . --name ${{ env.TG_USER }}
+          #$GOBIN/testground plan import --from . --name ${{ env.TG_USER }}
           ls -ltra /home/runner/.config/testground/
           echo "-----------------------------------------"
           ls -ltra /home/runner/.config/testground/plans/
           echo "-----------------------------------------"
           $GOBIN/testground daemon &
+          # Let's give some seconds to the daemon service to start
           sleep 3
           echo "-----------------------------------------"
-          $GOBIN/testground run composition --plan=${{ env.TG_USER }} -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
+          $GOBIN/testground run composition -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
           echo "-----------------------------------------"
           cat tg_run.log
           echo "-----------------------------------------"
-
-          #    testground daemon  # will start the daemon listening on localhost:8042 by default.
-          #    #testground plan import --from ./plans/network
-          #    #testground run single --plan=network --testcase=ping-pong \
-          #    #--builder=docker:go --runner=local:docker \
+          TGID=$(awk '/run is queued with ID/ {print $10}' <run.out)
+          # Check that the task was queued
+          if [ -z "$TGID" ];then
+          	echo "[ERROR] TestGround test not queued... something went wrong..."
+          	exit 1
+          fi
+          echo "TestGround ID is: [$TGID]"
