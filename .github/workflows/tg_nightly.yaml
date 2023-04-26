@@ -33,6 +33,9 @@ jobs:
         run: |
           echo $GOBIN
           ls -ltra $GOBIN
+          ./$GOBIN/testground -h
+          which testground
+          testground -h
 
           #- name: Build TestGround
           #  run: |
