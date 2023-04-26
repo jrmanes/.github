@@ -104,7 +104,7 @@ jobs:
       - name: Plan the execution
         run: |
           cd test-infra
-          testground plan import --from . --name ${{ env.TG_USER }}
+          $GOBIN/testground plan import --from . --name ${{ env.TG_USER }}
 
           #    make install       # builds testground and the Docker image, used by the local:docker runner.
           #    testground -h
