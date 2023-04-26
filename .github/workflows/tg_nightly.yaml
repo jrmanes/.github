@@ -21,30 +21,44 @@ jobs:
           ls ${{ github.workspace }}
           git clone ${{ env.REPO_TG }}
 
-          #- name: Build TestGround
-          #  run: |
-          #    cd testground
-          #    export GOBIN=$(go env GOPATH)/bin
-          #    mkdir -p $GOBIN
-          #    #make goinstall # builds testground and the Docker image, used by the local:docker runner.
-          #    echo $GOBIN
-          #    make install # builds testground and the Docker image, used by the local:docker runner.
-          #    ls -ltra ./
-          #    pwd
+      - name: Build TestGround
+        run: |
+          export GOBIN=$(go env GOPATH)/bin
+          mkdir -p $GOBIN
+          cd testground
+          #make goinstall # builds testground and the Docker image, used by the local:docker runner.
+          echo "-----------------------------------------"
+          echo $GOBIN
+          make install # builds testground and the Docker image, used by the local:docker runner.
+          echo "-----------------------------------------"
+          ls -ltra ./
+          echo "-----------------------------------------"
+          pwd
+          echo "-----------------------------------------"
 
       - name: Print Go Env Vars
         run: |
           export GOBIN=$(go env GOPATH)/bin
           mkdir -p $GOBIN
+          echo "-----------------------------------------"
           echo $GOBIN
+          echo "-----------------------------------------"
           go version
+          echo "-----------------------------------------"
           go env
+          echo "-----------------------------------------"
           pwd
+          echo "-----------------------------------------"
           ls ./
+          echo "-----------------------------------------"
           ls -ltra $GOBIN
+          echo "-----------------------------------------"
           cd testground
+          echo "-----------------------------------------"
           pwd
+          echo "-----------------------------------------"
           ls ./
+          echo "-----------------------------------------"
           #./$GOBIN/testground -h
           #which testground
           #testground -h
