@@ -33,9 +33,11 @@ jobs:
       - name: Print Go Env Vars
         run: |
           echo $GOBIN
+          go
+          go version
+          go env
           pwd
           ls -ltra $GOBIN
-          ls -ltra $GOBIN/testground
           cd testground
           pwd
           ls ./
