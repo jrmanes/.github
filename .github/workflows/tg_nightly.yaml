@@ -28,14 +28,20 @@ jobs:
           echo $GOBIN
           make install # builds testground and the Docker image, used by the local:docker runner.
           ls -ltra ./
+          pwd
 
       - name: Print Go Env Vars
         run: |
           echo $GOBIN
+          pwd
           ls -ltra $GOBIN
-          ./$GOBIN/testground -h
-          which testground
-          testground -h
+          ls -ltra $GOBIN/testground
+          cd testground
+          pwd
+          ls ./
+          #./$GOBIN/testground -h
+          #which testground
+          #testground -h
 
           #- name: Build TestGround
           #  run: |
