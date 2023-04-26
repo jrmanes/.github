@@ -85,8 +85,6 @@ jobs:
           echo "-----------------------------------------"
           ls -ltra /home/runner/.config/testground/plans/
           echo "-----------------------------------------"
-          ls -ltra /home/runner/.config/testground/plans/${{ env.TG_USER }}
-          echo "-----------------------------------------"
           $GOBIN/testground daemon &
           sleep 3
           echo "-----------------------------------------"
