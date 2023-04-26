@@ -81,11 +81,15 @@ jobs:
           export GOBIN=$(go env GOPATH)/bin
           cd test-infra
           $GOBIN/testground plan import --from . --name ${{ env.TG_USER }}
+          echo "-----------------------------------------"
+          $GOBIN/testground daemon &
+          echo "-----------------------------------------"
+          $GOBIN/testground run composition -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
+          echo "-----------------------------------------"
+          cat tg_run.log
+          echo "-----------------------------------------"
 
-          #    make install       # builds testground and the Docker image, used by the local:docker runner.
-          #    testground -h
           #    testground daemon  # will start the daemon listening on localhost:8042 by default.
           #    #testground plan import --from ./plans/network
           #    #testground run single --plan=network --testcase=ping-pong \
           #    #--builder=docker:go --runner=local:docker \
-
