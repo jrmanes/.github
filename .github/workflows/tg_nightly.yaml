@@ -59,6 +59,8 @@ jobs:
           echo "-----------------------------------------"
           ls ./
           echo "-----------------------------------------"
+          testground
+          which testground
           #./$GOBIN/testground -h
           #which testground
           #testground -h
