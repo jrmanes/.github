@@ -103,6 +103,8 @@ jobs:
 
       - name: Plan the execution
         run: |
+          export GOBIN=$(go env GOPATH)/bin
+          ls -ltra $GOBIN
           cd test-infra
           $GOBIN/testground plan import --from . --name ${{ env.TG_USER }}
 
