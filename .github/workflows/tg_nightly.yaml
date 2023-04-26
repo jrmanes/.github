@@ -1,6 +1,9 @@
 name: TestGround Nightly
 
 on:
+  schedule:
+    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+    - cron: '0 0 * * *' # triggered at midnight
   push:
     branches:
       - 'main'
@@ -44,8 +47,6 @@ jobs:
           go env
           echo $GOBIN
           echo "-----------------------------------------"
-          #make install # builds testground and the Docker image, used by the local:docker runner.
-          echo "-----------------------------------------"
           pwd
           echo "-----------------------------------------"
 
@@ -60,32 +61,6 @@ jobs:
           user="${{ env.TG_USER }}"
           EOF
           cat ~/.config/testground/.env.toml
-
-      #- name: Print Go Env Vars
-      #  run: |
-      #    cat ~/.config/testground/.env.toml
-      #    export GOBIN=$(go env GOPATH)/bin
-      #    mkdir -p $GOBIN
-      #    echo "-----------------------------------------"
-      #    echo $GOBIN
-      #    echo "-----------------------------------------"
-      #    go version
-      #    echo "-----------------------------------------"
-      #    go env
-      #    echo "-----------------------------------------"
-      #    pwd
-      #    echo "-----------------------------------------"
-      #    ls ./
-      #    echo "-----------------------------------------"
-      #    ls -ltra $GOBIN
-      #    echo "-----------------------------------------"
-      #    cd testground
-      #    echo "-----------------------------------------"
-      #    pwd
-      #    echo "-----------------------------------------"
-      #    ls ./
-      #    echo "-----------------------------------------"
-      #    $GOBIN/testground
 
       - name: Update the Celestia Node to last commit
         run: |
@@ -114,13 +89,3 @@ jobs:
           #    #testground run single --plan=network --testcase=ping-pong \
           #    #--builder=docker:go --runner=local:docker \
 
-          #- name: Build TestGround
-          #  run: |
-          #    cd testground
-          #    testground -h
-
-          #- name: Get the latest commit in celestia-node
-          #  run: |
-          #    apt update; apt install -y jq
-          #    CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${{ env.ORG }}/celestia-node/commits/${{ env.BRANCH }} | jq -c '.sha'| tr -d '"'| cut -c1-7)
-          #    echo $CELESTIA_NODE
