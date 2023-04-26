@@ -25,6 +25,7 @@ jobs:
           #  run: |
           #    cd testground
           #    export GOBIN=$(go env GOPATH)/bin
+          #    mkdir -p $GOBIN
           #    #make goinstall # builds testground and the Docker image, used by the local:docker runner.
           #    echo $GOBIN
           #    make install # builds testground and the Docker image, used by the local:docker runner.
@@ -34,6 +35,7 @@ jobs:
       - name: Print Go Env Vars
         run: |
           export GOBIN=$(go env GOPATH)/bin
+          mkdir -p $GOBIN
           echo $GOBIN
           go version
           go env
