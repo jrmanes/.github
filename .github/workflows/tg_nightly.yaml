@@ -90,7 +90,6 @@ jobs:
           ls ./
           echo "-----------------------------------------"
           echo "-----------------------------------------"
-          $GOBIN/testground
           CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/celestia-node/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
           echo $CELESTIA_NODE
 
