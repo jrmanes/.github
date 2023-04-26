@@ -39,6 +39,11 @@ jobs:
           cd testground
           make goinstall
           echo "-----------------------------------------"
+          ls -ltra ./
+          echo "-----------------------------------------"
+          cd -
+          ls -ns $GOBIN/testground ./testground
+          echo "-----------------------------------------"
           go env
           echo $GOBIN
           echo "-----------------------------------------"
@@ -103,10 +108,10 @@ jobs:
 
       - name: Plan the execution
         run: |
-          export GOBIN=$(go env GOPATH)/bin
-          ls -ltra $GOBIN
+          #export GOBIN=$(go env GOPATH)/bin
           cd test-infra
-          $GOBIN/testground plan import --from . --name ${{ env.TG_USER }}
+          #$GOBIN/testground plan import --from . --name ${{ env.TG_USER }}
+          ../testground plan import --from . --name ${{ env.TG_USER }}
 
           #    make install       # builds testground and the Docker image, used by the local:docker runner.
           #    testground -h
