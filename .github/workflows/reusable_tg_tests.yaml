@@ -17,6 +17,10 @@ on:
         type: string
         description: "TestGround Cluster Region"
         default: "eu-west-1"
+      celestia_node_commit_sha:
+        required: false
+        type: string
+        description: "You can specify any commit that you want to use in the celestia-node repository"
 
 env:
   REPO_TG: https://github.com/testground/testground.git
@@ -61,12 +65,18 @@ jobs:
 
       - name: Update go.mod with the latest Celestia Node commit
         run: |
-          cd test-infra
-          # Get the latest commit SHA in the celestia-node repo
-          CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/${CELESTIA_NODE_REPO}/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
-          echo $CELESTIA_NODE
-          # Replace the value in the go.mod file
-          sed -i "s|github.com/${ORG}/${CELESTIA_NODE_REPO}.*|github.com/${ORG}${CELESTIA_NODE_REPO} ${CELESTIA_NODE}|g" go.mod
+          if [ -z "${{ inputs.celestia_node_commit_sha }}" ];then
+            echo "There's no commit secified, so use the current version"
+          else
+            echo "Let's use an specific commit SHA"
+            cd test-infra
+            # Get the latest commit SHA in the celestia-node repo
+            CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/${CELESTIA_NODE_REPO}/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
+            echo $CELESTIA_NODE
+            # Replace the value in the go.mod file
+            sed -i "s|github.com/${ORG}/${CELESTIA_NODE_REPO}.*|github.com/${ORG}${CELESTIA_NODE_REPO} ${CELESTIA_NODE}|g" go.mod
+            cat go.mod
+          fi
 
       - name: Plan the execution
         run: |
