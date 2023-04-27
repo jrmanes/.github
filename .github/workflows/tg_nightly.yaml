@@ -11,6 +11,7 @@ on:
 env:
   ORG: celestiaorg
   CELESTIA_NODE_REPO: celestia-node
+  CELESTIA_APP_REPO: celestia-app
   BRANCH: main
 
 jobs:
@@ -41,6 +42,20 @@ jobs:
           # Replace the value in the go.mod file
           echo "celestia_node_latest_commit=$(echo $CELESTIA_NODE)" >> "$GITHUB_OUTPUT"
 
+  celestia-app-latest-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      celestia_app_latest_commit: ${{ steps.celestia_app_latest_commit.outputs.celestia_app_latest_commit }}
+    steps:
+      - id: celestia_app_latest_commit
+        name: Get the latest commit
+        run: |
+          # Get the latest commit SHA in the celestia-app repo
+          CELESTIA_APP=$(curl -Ls https://api.github.com/repos/${ORG}/${CELESTIA_APP_REPO}/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
+          echo $CELESTIA_APP
+          # Replace the value in the go.mod file
+          echo "celestia_app_latest_commit=$(echo $CELESTIA_APP)" >> "$GITHUB_OUTPUT"
+
   testground:
     needs: [prepare-env, celestia-node-latest-commit]
     uses: jrmanes/.github/.github/workflows/reusable_tg_tests.yaml@main # yamllint disable-line rule:line-length
@@ -50,3 +65,4 @@ jobs:
       testground_url: ${{ needs.prepare-env.outputs.testground_url }}"
       testground_region: ${{ needs.prepare-env.outputs.testground_region }}"
       celestia_node_commit_sha: ${{ needs.celestia-node-latest-commit.outputs.celestia_node_latest_commit }}"
+      celestia_app_commit_sha: ${{ needs.celestia-app-latest-commit.outputs.celestia_app_latest_commit }}"
