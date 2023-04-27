@@ -98,7 +98,7 @@ jobs:
             sed -i "s|github.com/${ORG}/${CELESTIA_APP_REPO}.*|github.com/${ORG}${CELESTIA_APP_REPO} ${CELESTIA_APP}|g" go.mod
             cd ..
           fi
-          cat go.mod
+          cat ./test-infra/go.mod
 
       - name: Plan the execution
         run: |
