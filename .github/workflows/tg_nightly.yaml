@@ -35,7 +35,7 @@ jobs:
       celestia_app_latest_commit: ${{ steps.celestia_app_latest_commit.outputs.celestia_app_latest_commit }}
     steps:
       - id: celestia_node_latest_commit
-        name: Get the latest commit
+        name: Get The Latest Celestia Node Commit SHA
         run: |
           # Get the latest commit SHA in the celestia-node repo
           CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/${CELESTIA_NODE_REPO}/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
@@ -43,7 +43,7 @@ jobs:
           # Replace the value in the go.mod file
           echo "celestia_node_latest_commit=$(echo $CELESTIA_NODE)" >> "$GITHUB_OUTPUT"
       - id: celestia_app_latest_commit
-        name: Get the latest commit
+        name: Get The Latest Celestia APP Commit SHA
         run: |
           # Get the latest commit SHA in the celestia-app repo
           CELESTIA_APP=$(curl -Ls https://api.github.com/repos/${ORG}/${CELESTIA_APP_REPO}/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
