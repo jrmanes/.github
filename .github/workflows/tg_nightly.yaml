@@ -29,6 +29,7 @@ jobs:
   # We want to specify the latest commit, so we use this job to get it from the
   # repo and use it in the inputs
   celestia-node-latest-commit:
+    needs: celestia-app-latest-commit
     runs-on: ubuntu-latest
     outputs:
       celestia_node_latest_commit: ${{ steps.celestia_node_latest_commit.outputs.celestia_node_latest_commit }}
@@ -57,7 +58,7 @@ jobs:
           echo "celestia_app_latest_commit=$(echo $CELESTIA_APP)" >> "$GITHUB_OUTPUT"
 
   testground:
-    needs: [prepare-env, celestia-node-latest-commit, celestia-app-latest-commit]
+    needs: [prepare-env, celestia-node-latest-commit]
     uses: jrmanes/.github/.github/workflows/reusable_tg_tests.yaml@main # yamllint disable-line rule:line-length
       #uses: celestiaorg/.github/.github/workflows/reusable_testground_tests.yaml@main # yamllint disable-line rule:line-length
     with:
