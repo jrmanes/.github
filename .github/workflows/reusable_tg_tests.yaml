@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Clone the repo
         run:
-          git clone ${{ env.REPO_TG }}
+          git clone ${{ env.REPO_TG }} &&\
           git clone ${{ env.REPO_TEST_TG }}
 
       - name: Build TestGround
