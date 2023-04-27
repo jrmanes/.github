@@ -1,12 +1,22 @@
-name: TestGround Nightly
+name: TestGround Tests
 
 on:
-  schedule:
-    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-    - cron: '0 0 * * *' # triggered at midnight
-  push:
-    branches:
-      - 'main'
+  workflow_call:
+    inputs:
+      tests_files_path:
+        description: "Path to Tests"
+        required: true
+        type: string
+        default: "compositions/cluster-k8s/sanity/002-da-sync-8.toml"
+      testground_url:
+        required: true
+        type: string
+        description: "TestGround LoadBalancer URL"
+      testground_region:
+        required: true
+        type: string
+        description: "TestGround Cluster Region"
+        default: "eu-west-1"
 
 env:
   REPO_TG: https://github.com/testground/testground.git
@@ -15,8 +25,9 @@ env:
   CELESTIA_NODE_REPO: celestia-node
   BRANCH: main
   TG_USER: ga-bot
-  # TESTGROUND_URL: # You have to create a secret in the repo with the value
-  # TESTGROUND_REGION: # You have to create a secret in repo with the value
+  TESTGROUND_URL: ${{ inputs.testground_url }}
+  TESTGROUND_REGION: ${{ inputs.testground_region }}
+  TEST_FILES_PATH: ${{ inputs.tests_files_path }}
  
 jobs:
   testground:
@@ -28,34 +39,41 @@ jobs:
         run: |
           git clone ${{ env.REPO_TG }}
           git clone ${{ env.REPO_TEST_TG }}
+
       - name: Build TestGround
         run: |
           export GOBIN=$(go env GOPATH)/bin
           mkdir -p $GOBIN
           cd testground
           make goinstall
+
       - name: Generate Config TestGround
         run: |
           mkdir -p ~/.config/testground/
           cat <<EOF > ~/.config/testground/.env.toml
           [aws]
-          region="${{ secrets.TESTGROUND_REGION }}"
+          region="${{ env.TESTGROUND_REGION }}"
           [client]
-          endpoint = "${{ secrets.TESTGROUND_URL }}"
-          user="${{ env.TG_USER }}"
+          endpoint = "${{ env.TESTGROUND_URL }}"
+          user="${{ env.TG_USER }}"
           EOF
           cat ~/.config/testground/.env.toml
+
       - name: Update go.mod with the latest Celestia Node commit
         run: |
           cd test-infra
+          # Get the latest commit SHA in the celestia-node repo
           CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/${CELESTIA_NODE_REPO}/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
           echo $CELESTIA_NODE
+          # Replace the value in the go.mod file
           sed -i "s|github.com/${ORG}/${CELESTIA_NODE_REPO}.*|github.com/${ORG}${CELESTIA_NODE_REPO} ${CELESTIA_NODE}|g" go.mod
+
       - name: Plan the execution
         run: |
           export GOBIN=$(go env GOPATH)/bin
           cd test-infra
           $GOBIN/testground plan import --from . --name celestia
+
       - name: Start the TestGround Daemon
         run: |
           export GOBIN=$(go env GOPATH)/bin
@@ -64,12 +82,13 @@ jobs:
           $GOBIN/testground daemon &
           # Let's give some seconds to the daemon service to start
           sleep 3
+
       - name: Execute the test
         run: |
           export GOBIN=$(go env GOPATH)/bin
           cd test-infra
           echo "-----------------------------------------"
-          $GOBIN/testground run composition -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
+          $GOBIN/testground run composition -f ${{ env.TEST_FILES_PATH }} | tee tg_run.log
           echo "-----------------------------------------"
           cat tg_run.log
           echo "-----------------------------------------"
