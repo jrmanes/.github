@@ -63,7 +63,8 @@ jobs:
           EOF
           cat ~/.config/testground/.env.toml
 
-      # In the next step, we can verify 
+      # In the next step, we can verify if we need to use an specific commit 
+      # or we can use the one in the file.
       - name: Update go.mod with the latest Celestia Node commit
         run: |
           COMMIT_SHA=$(echo '${{ inputs.celestia_node_commit_sha }}'| tr -d '"')
