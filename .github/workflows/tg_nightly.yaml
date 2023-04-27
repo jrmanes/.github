@@ -72,7 +72,7 @@ jobs:
           echo "-----------------------------------------"
           cat tg_run.log
           echo "-----------------------------------------"
-          TGID=$(awk '/run is queued with ID/ {print $10}' <tg_run.out)
+          TGID=$(awk '/run is queued with ID/ {print $10}' <tg_run.log)
           # Check that the task was queued
           if [ -z "$TGID" ];then
           	echo "[ERROR] TestGround test not queued... something went wrong..."
