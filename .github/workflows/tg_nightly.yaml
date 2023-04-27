@@ -57,7 +57,7 @@ jobs:
           echo "celestia_app_latest_commit=$(echo $CELESTIA_APP)" >> "$GITHUB_OUTPUT"
 
   testground:
-    needs: [prepare-env, celestia-node-latest-commit]
+    needs: [prepare-env, celestia-node-latest-commit, celestia-app-latest-commit]
     uses: jrmanes/.github/.github/workflows/reusable_tg_tests.yaml@main # yamllint disable-line rule:line-length
       #uses: celestiaorg/.github/.github/workflows/reusable_testground_tests.yaml@main # yamllint disable-line rule:line-length
     with:
