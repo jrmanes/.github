@@ -78,7 +78,6 @@ jobs:
             echo $CELESTIA_NODE
             # Replace the value in the go.mod file
             sed -i "s|github.com/${ORG}/${CELESTIA_NODE_REPO}.*|github.com/${ORG}${CELESTIA_NODE_REPO} ${CELESTIA_NODE}|g" go.mod
-            cat go.mod
           fi
 
       - name: Plan the execution
