@@ -66,3 +66,4 @@ jobs:
       testground_region: ${{ needs.prepare-env.outputs.testground_region }}"
       celestia_node_commit_sha: ${{ needs.celestia-node-latest-commit.outputs.celestia_node_latest_commit }}"
       celestia_app_commit_sha: ${{ needs.celestia-app-latest-commit.outputs.celestia_app_latest_commit }}"
+
