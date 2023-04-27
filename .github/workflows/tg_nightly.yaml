@@ -9,8 +9,8 @@ on:
       - 'main'
 
 env:
-  TESTGROUND_URL: ${{ inputs.TESTGROUND_URL }}
-  TESTGROUND_REGION: ${{ inputs.TESTGROUND_REGION }}
+  TESTGROUND_URL: ${{ secrets.TESTGROUND_URL }}
+  TESTGROUND_REGION: ${{ secrets.TESTGROUND_REGION }}
 
 jobs:
   testground:
