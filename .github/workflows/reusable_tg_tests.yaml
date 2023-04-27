@@ -37,7 +37,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Clone the repo
-        run: 
+        run:
           git clone ${{ env.REPO_TG }}
           git clone ${{ env.REPO_TEST_TG }}
 

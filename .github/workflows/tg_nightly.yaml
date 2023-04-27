@@ -26,5 +26,5 @@ jobs:
     uses: jrmanes/.github/.github/workflows/reusable_tg_tests.yaml@main # yamllint disable-line rule:line-length
     with:
       tests_files_path: "compositions/cluster-k8s/sanity/002-da-sync-8.toml"
-      testground_url: ${{  needs.prepare-env.outputs.testground_url }}"
+      testground_url: ${{ needs.prepare-env.outputs.testground_url }}"
       testground_region: ${{ needs.prepare-env.outputs.testground_region}}"
