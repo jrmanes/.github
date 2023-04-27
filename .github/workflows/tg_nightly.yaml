@@ -28,11 +28,12 @@ jobs:
 
   # We want to specify the latest commit, so we use this job to get it from the
   # repo and use it in the inputs
-  celestia-node-latest-commit:
+  celestia-custom-latest-commit:
     needs: celestia-app-latest-commit
     runs-on: ubuntu-latest
     outputs:
       celestia_node_latest_commit: ${{ steps.celestia_node_latest_commit.outputs.celestia_node_latest_commit }}
+      celestia_app_latest_commit: ${{ steps.celestia_app_latest_commit.outputs.celestia_app_latest_commit }}
     steps:
       - id: celestia_node_latest_commit
         name: Get the latest commit
@@ -42,12 +43,6 @@ jobs:
           echo $CELESTIA_NODE
           # Replace the value in the go.mod file
           echo "celestia_node_latest_commit=$(echo $CELESTIA_NODE)" >> "$GITHUB_OUTPUT"
-
-  celestia-app-latest-commit:
-    runs-on: ubuntu-latest
-    outputs:
-      celestia_app_latest_commit: ${{ steps.celestia_app_latest_commit.outputs.celestia_app_latest_commit }}
-    steps:
       - id: celestia_app_latest_commit
         name: Get the latest commit
         run: |
@@ -58,13 +53,12 @@ jobs:
           echo "celestia_app_latest_commit=$(echo $CELESTIA_APP)" >> "$GITHUB_OUTPUT"
 
   testground:
-    needs: [prepare-env, celestia-node-latest-commit]
+    needs: [prepare-env, celestia-custom-latest-commit]
     uses: jrmanes/.github/.github/workflows/reusable_tg_tests.yaml@main # yamllint disable-line rule:line-length
       #uses: celestiaorg/.github/.github/workflows/reusable_testground_tests.yaml@main # yamllint disable-line rule:line-length
     with:
       tests_files_path: "compositions/cluster-k8s/sanity/002-da-sync-8.toml"
       testground_url: ${{ needs.prepare-env.outputs.testground_url }}"
       testground_region: ${{ needs.prepare-env.outputs.testground_region }}"
-      celestia_node_commit_sha: ${{ needs.celestia-node-latest-commit.outputs.celestia_node_latest_commit }}"
-      celestia_app_commit_sha: ${{ needs.celestia-app-latest-commit.outputs.celestia_app_latest_commit }}"
-
+      celestia_node_commit_sha: ${{ needs.celestia-custom-latest-commit.outputs.celestia_node_latest_commit }}"
+      celestia_app_commit_sha: ${{ needs.celestia-custom-latest-commit.outputs.celestia_node_latest_commit }}"
