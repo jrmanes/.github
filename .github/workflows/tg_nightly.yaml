@@ -8,11 +8,15 @@ on:
     branches:
       - 'main'
 
+env:
+  TESTGROUND_URL: ${{ secrets.testground_url }}
+  TESTGROUND_REGION: ${{ secrets.testground_region }}
+
 jobs:
   testground:
     #uses: celestiaorg/.github/.github/workflows/reusable_dockerfile_pipeline.yml@v0.1.1 # yamllint disable-line rule:line-length
     uses: jrmanes/.github/.github/workflows/reusable_tg_tests.yaml@main # yamllint disable-line rule:line-length
     with:
       tests_files_path: "compositions/cluster-k8s/sanity/002-da-sync-8.toml"
-      testgroun_url: "${{ secrets.TESTGROUND_URL }}"
-      testgroun_region: "${{ secrets.TESTGROUND_REGION }}"
+      testgroun_url: "${{ env.TESTGROUND_URL }}"
+      testgroun_region: "${{ env.TESTGROUND_REGION }}"
