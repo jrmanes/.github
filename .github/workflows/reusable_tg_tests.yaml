@@ -56,16 +56,16 @@ jobs:
           mkdir -p ~/.config/testground/
           cat <<EOF > ~/.config/testground/.env.toml
           [aws]
-          region="${{ env.TESTGROUND_REGION }}"
+          region="${{ env.TESTGROUND_REGION }}"
           [client]
-          endpoint = "${{ env.TESTGROUND_URL }}"
-          user="${{ env.TG_USER }}"
+          endpoint = "${{ env.TESTGROUND_URL }}"
+          user="${{ env.TG_USER }}"
           EOF
           cat ~/.config/testground/.env.toml
 
       - name: Update go.mod with the latest Celestia Node commit
         run: |
-          if [ -z ${{ inputs.celestia_node_commit_sha }} ];then
+          if [[ -z "${{ inputs.celestia_node_commit_sha }}" ]];then
             echo "There's no commit secified, so use the current version"
           else
             echo "Let's use an specific commit SHA"
