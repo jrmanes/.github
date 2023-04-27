@@ -29,7 +29,6 @@ jobs:
   # We want to specify the latest commit, so we use this job to get it from the
   # repo and use it in the inputs
   celestia-custom-latest-commit:
-    needs: celestia-app-latest-commit
     runs-on: ubuntu-latest
     outputs:
       celestia_node_latest_commit: ${{ steps.celestia_node_latest_commit.outputs.celestia_node_latest_commit }}
