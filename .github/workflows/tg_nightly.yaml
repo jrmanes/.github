@@ -8,81 +8,11 @@ on:
     branches:
       - 'main'
 
-env:
-  REPO_TG: https://github.com/testground/testground.git
-  REPO_TEST_TG: https://github.com/celestiaorg/test-infra.git
-  ORG: celestiaorg
-  CELESTIA_NODE_REPO: celestia-node
-  BRANCH: main
-  TG_USER: ga-bot
-  # TESTGROUND_URL: # You have to create a secret in the repo with the value
-  # TESTGROUND_REGION: # You have to create a secret in repo with the value
- 
 jobs:
   testground:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Clone the repo
-        run: |
-          git clone ${{ env.REPO_TG }}
-          git clone ${{ env.REPO_TEST_TG }}
-
-      - name: Build TestGround
-        run: |
-          export GOBIN=$(go env GOPATH)/bin
-          mkdir -p $GOBIN
-          cd testground
-          make goinstall
-
-      - name: Generate Config TestGround
-        run: |
-          mkdir -p ~/.config/testground/
-          cat <<EOF > ~/.config/testground/.env.toml
-          [aws]
-          region="${{ secrets.TESTGROUND_REGION }}"
-          [client]
-          endpoint = "${{ secrets.TESTGROUND_URL }}"
-          user="${{ env.TG_USER }}"
-          EOF
-          cat ~/.config/testground/.env.toml
-
-      - name: Update go.mod with the latest Celestia Node commit
-        run: |
-          cd test-infra
-          CELESTIA_NODE=$(curl -Ls https://api.github.com/repos/${ORG}/${CELESTIA_NODE_REPO}/commits/${BRANCH} | jq -c '.sha'| tr -d '"'| cut -c1-7)
-          echo $CELESTIA_NODE
-          sed -i "s|github.com/${ORG}/${CELESTIA_NODE_REPO}.*|github.com/${ORG}${CELESTIA_NODE_REPO} ${CELESTIA_NODE}|g" go.mod
-
-      - name: Plan the execution
-        run: |
-          export GOBIN=$(go env GOPATH)/bin
-          cd test-infra
-          $GOBIN/testground plan import --from . --name celestia
-
-      - name: Start the TestGround Daemon
-        run: |
-          export GOBIN=$(go env GOPATH)/bin
-          cd test-infra
-          $GOBIN/testground plan import --from . --name celestia
-          $GOBIN/testground daemon &
-          # Let's give some seconds to the daemon service to start
-          sleep 3
-
-      - name: Execute the test
-        run: |
-          export GOBIN=$(go env GOPATH)/bin
-          cd test-infra
-          echo "-----------------------------------------"
-          $GOBIN/testground run composition -f compositions/cluster-k8s/sanity/002-da-sync-8.toml | tee tg_run.log
-          echo "-----------------------------------------"
-          cat tg_run.log
-          echo "-----------------------------------------"
-          TGID=$(awk '/run is queued with ID/ {print $10}' <tg_run.log)
-          # Check that the task was queued
-          if [ -z "$TGID" ];then
-          	echo "[ERROR] TestGround test not queued... something went wrong..."
-          	exit 1
-          fi
-          echo "TestGround ID is: [$TGID]"
+    #uses: celestiaorg/.github/.github/workflows/reusable_dockerfile_pipeline.yml@v0.1.1 # yamllint disable-line rule:line-length
+    uses: jrmanes/.github/.github/workflows/reusable_tg_test.yaml@main # yamllint disable-line rule:line-length
+    with:
+      tests_files_path: "compositions/cluster-k8s/sanity/002-da-sync-8.toml"
+      testgroun_url: "${{ secrets.TESTGROUND_URL }}"
+      testgroun_region: "${{ secrets.TESTGROUND_REGION }}"
