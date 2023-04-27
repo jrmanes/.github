@@ -65,7 +65,7 @@ jobs:
 
       - name: Update go.mod with the latest Celestia Node commit
         run: |
-          COMMIT_SHA=$(echo ${{ inputs.celestia_node_commit_sha }}| tr -d '"')
+          COMMIT_SHA=$(echo '${{ inputs.celestia_node_commit_sha }}'| tr -d '"')
           if [[ -z "$COMMIT_SHA" ]];then
             echo "There's no commit secified, so use the current version"
           else
