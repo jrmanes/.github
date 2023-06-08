@@ -28,14 +28,20 @@ jobs:
     steps:
       - name: PRs summary
         run: |
-          if [ "${{ github.event.inputs.chain-id }}" != "" ]; then
-            echo "Name defined"
-            echo ${{ github.event.inputs.chain-id }}
+          if [ -z "${{ github.event.inputs.chain-id }}" ]; then
+          #if [ "${{ github.event.inputs.chain-id }}" != "" ]; then
+            echo "The input is empty."
           else
-            echo "Name NOT defined"
-            echo ${{ github.event.inputs.chain-id }}
+            echo "The input is not empty."
           fi
-          echo ${{ github.event.inputs.chain-id }}
+          #if [ "${{ github.event.inputs.chain-id }}" != "" ]; then
+          #  echo "Name defined"
+          #  echo ${{ github.event.inputs.chain-id }}
+          #else
+          #  echo "Name NOT defined"
+          #  echo ${{ github.event.inputs.chain-id }}
+          #fi
+          #echo ${{ github.event.inputs.chain-id }}
           #echo "ArgoCD-Apps PR: [${{ env.OUTPUT_ARGOCD_APP_PR }}]"
           #echo "Celestia Stack Internal PR: [${{ env.OUTPUT_CELESTIA_STACK_INTERNAL }}]"
           #echo "Celestia Internal Tools PR: [${{ env.OUTPUT_CELESTIA_INTERNAL_TOOLS }}]"
