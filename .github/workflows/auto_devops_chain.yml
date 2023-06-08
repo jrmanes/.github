@@ -6,7 +6,7 @@ on:
       chain-id:
         required: false
         type: string
-        description: Chain-ID name?, if you leave it empty, the default value will be like [app-v100-node-v0110]
+        description: Chain-ID name?, if you leave it empty, the default name will be like [app-v100-node-v0110]
       app_version:
         required: true
         type: string
@@ -28,6 +28,13 @@ jobs:
     steps:
       - name: PRs summary
         run: |
+          if [[ -n ${{ github.event.inputs.chain-id }} ]];then
+            echo "Name defined"
+            echo ${{ github.event.inputs.chain-id }}
+          else
+            echo "Name NOT defined"
+            echo ${{ github.event.inputs.chain-id }}
+          fi
           echo ${{ github.event.inputs.chain-id }}
           #echo "ArgoCD-Apps PR: [${{ env.OUTPUT_ARGOCD_APP_PR }}]"
           #echo "Celestia Stack Internal PR: [${{ env.OUTPUT_CELESTIA_STACK_INTERNAL }}]"
