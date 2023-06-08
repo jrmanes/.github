@@ -6,7 +6,7 @@ on:
       chain-id:
         required: true
         type: string
-        description: Name of the new Chain-id
+        description: What's the name of the new Chain?
       app_version:
         required: true
         type: string
@@ -16,52 +16,44 @@ on:
         type: string
         description: Celestia Node Image Version
 
-permissions:
-  contents: write
-  pull-requests: write
+# ----------------------------------------------------------------------------
 
 jobs:
    argocd-apps:
     permissions:
       contents: write
+      pull-requests: write
+      repository-projects: write
     runs-on: "ubuntu-latest"
     env:
-      GH_TOKEN: ${{ github.token }}
-      #TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      GITHUB_TOKEN: ${{ github.token }}
+      ORG_NAME: "celestiaorg"
       REPO_NAME: "argocd-apps"
+      DEVOPS_ASSIGNEES: ("Bidon15" "sysrex" "jrmanes" "smuu")
+    outputs:
+      output-argocd-apps-pr: ${{ steps.create_pr.outputs.argocd_apps_pr }}
     steps:
       - name: Checkout
         uses: "actions/checkout@v3"
-      - name: Print inputs
-        run: |
-          echo "chain-id: [${{ github.event.inputs.chain-id }}]"
-          echo "app_version: [${{ github.event.inputs.app_version }}]"
-          echo "node_version: [${{ github.event.inputs.node_version }}]"
       - name: Configure git
         run: |
-          git config --global url."https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ env.TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
           git config --global user.email "devops@celestia.org"
           git config --global user.name "autodevops"
-      - name: Checkout
-        uses: "actions/checkout@v3"
       - name: Clone Repo
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          #gh repo clone https://github.com/celestiaorg/argocd-apps
-          git clone https://github.com/celestiaorg/${{ env.REPO_NAME }}.git
+          git clone https://github.com/${{ env.ORG_NAME }}/${{ env.REPO_NAME }}.git
+          cd ${{ env.REPO_NAME }}
+          git fetch; git pull
       - name: Create the branch
         run: |
           cd ${{ env.REPO_NAME }}
           git checkout -b autodevops/${{ github.event.inputs.chain-id }}
-          echo "-----------------------------"
-          ls -ltra ./
-          echo "chain-id: [${{ github.event.inputs.chain-id }}]"
       - name: Run scripts
         run: |
           cd ${{ env.REPO_NAME }}
           ./scripts/auto_robusta_chain.sh ${{ github.event.inputs.chain-id }}
-          echo "-----------------------------"
       - name: Commit & Push the new resources
         run: |
           cd ${{ env.REPO_NAME }}
@@ -69,22 +61,189 @@ jobs:
           git add .
           git commit -m "Resources added for the new Chain-id added: [${{ github.event.inputs.chain-id }}]"
           git push origin autodevops/${{ github.event.inputs.chain-id }}
-          #- name: Authenticate with GitHub
-          #  run: |
-          #    unset GH_TOKEN
-          #    #gh auth login
-          #    echo ${{ secrets.MY_CUSTOM_TOKEN }} > gh_token.txt
-          #    gh auth login --with-token < gh_token.txt
-          #    gh status
-          #    #gh auth login <<< "${{ env.GH_TOKEN }}"
-      - name: Create pull request
+      - name: Create PR
+        id: create_pr
+        env:
+          GITHUB_TOKEN: ${{ env.TOKEN }}
         run: |
           cd ${{ env.REPO_NAME }}
-          # Create a pull request using GH CLI
-          gh pr create --base main \
+          pr_number=$(gh pr create --base main \
                        --head autodevops/${{ github.event.inputs.chain-id }} \
-                       --title "AutoDevOps: chain-id -> [${{ github.event.inputs.chain-id }}]" \
-                       --body "Testing PR" \
-                       --repo https://github.com/celestiaorg/${{ env.REPO_NAME }}
+                       --title "AutoDevOps: New ChainID -> [${{ github.event.inputs.chain-id }}]" \
+                       --body "Hello DevOps! Let's setup the new resources for the new chain-id: [${{ github.event.inputs.chain-id }}]" \
+                       --label "devops,automation,enhancement" \
+                       --repo https://github.com/${{ env.ORG_NAME }}/${{ env.REPO_NAME }})
+          # Get only the PR id
+          echo "argocd_apps_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
+          echo "pr_number=$(echo $pr_number|rev|cut -d'/' -f1|rev)" >> $GITHUB_OUTPUT
+      - name: Update The Assignees
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ env.TOKEN }}
+        run: |
+          pr_number=${{ steps.create_pr.outputs.pr_number }}
+          assignees=${{ env.DEVOPS_ASSIGNEES }}
+          for assignee in "${assignees[@]}"; do
+            for i in "assignee" "reviewer"; do
+              gh pr edit $pr_number --add-$i $assignee --repo ${{ env.ORG_NAME }}/${{ env.REPO_NAME }}
+            done
+          done
+
+# ----------------------------------------------------------------------------
+   celestia-stack-internal:
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+    runs-on: "ubuntu-latest"
+    env:
+      TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      GITHUB_TOKEN: ${{ github.token }}
+      ORG_NAME: "celestiaorg"
+      REPO_NAME: "celestia-stack-internal"
+      DEVOPS_ASSIGNEES: ("Bidon15" "sysrex" "jrmanes" "smuu")
+      BASE_CHAIN_ID: "robusta-2"
+    outputs:
+      output-celestia-stack-internal-pr: ${{ steps.create_pr.outputs.celestia_stack_internal_pr}}
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v3"
+      - name: Configure git
+        run: |
+          git config --global url."https://${{ env.TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global user.email "devops@celestia.org"
+          git config --global user.name "autodevops"
+      - name: Clone Repo
+        run: |
+          git clone https://github.com/${{ env.ORG_NAME }}/${{ env.REPO_NAME }}.git
+          cd ${{ env.REPO_NAME }}
+          git fetch; git pull
+      - name: Create the branch
+        run: |
+          cd ${{ env.REPO_NAME }}
+          git checkout -b autodevops/${{ github.event.inputs.chain-id }}
+      - name: Run scripts
+        run: |
+          cd ${{ env.REPO_NAME }}
+          ./scripts/auto_devops_chain.sh -b ${{ env.BASE_CHAIN_ID }} \
+                                         -c ${{ github.event.inputs.chain-id }} \
+                                         -a ${{ github.event.inputs.app_version }} \
+                                         -n ${{ github.event.inputs.node_version }} \
+                                         -f
+      - name: Commit & Push the new resources
+        run: |
+          cd ${{ env.REPO_NAME }}
+          git branch
+          git add .
+          git commit -m "Resources added for the new Chain-id added: [${{ github.event.inputs.chain-id }}]"
+          git push origin autodevops/${{ github.event.inputs.chain-id }}
+      - name: Create PR
+        id: create_pr
+        env:
+          GITHUB_TOKEN: ${{ env.TOKEN }}
+        run: |
+          cd ${{ env.REPO_NAME }}
+          pr_number=$(gh pr create --base main \
+                       --head autodevops/${{ github.event.inputs.chain-id }} \
+                       --title "AutoDevOps: New ChainID -> [${{ github.event.inputs.chain-id }}]" \
+                       --body "Hello DevOps! Let's setup the new resources for the new chain-id: [${{ github.event.inputs.chain-id }}]" \
+                       --label "devops,automation,enhancement" \
+                       --repo https://github.com/${{ env.ORG_NAME }}/${{ env.REPO_NAME }})
+          # Get only the PR id
+          echo "celestia_stack_internal_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
+          echo "pr_number=$(echo $pr_number|rev|cut -d'/' -f1|rev)" >> $GITHUB_OUTPUT
+      - name: Update The Assignees
+        env:
+          GITHUB_TOKEN: ${{ env.TOKEN }}
+        run: |
+          pr_number=${{ steps.create_pr.outputs.pr_number }}
+          assignees=${{ env.DEVOPS_ASSIGNEES }}
+          for assignee in "${assignees[@]}"; do
+            for i in "assignee" "reviewer"; do
+              gh pr edit $pr_number --add-$i $assignee --repo ${{ env.ORG_NAME }}/${{ env.REPO_NAME }}
+            done
+          done
+
+# ----------------------------------------------------------------------------
+   celestia-internal-tools:
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+    runs-on: "ubuntu-latest"
+    env:
+      TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      GITHUB_TOKEN: ${{ github.token }}
+      ORG_NAME: "celestiaorg"
+      REPO_NAME: "celestia-internal-tools"
+      DEVOPS_ASSIGNEES: ("Bidon15" "sysrex" "jrmanes" "smuu")
+    outputs:
+      output-celestia-internal-tools-pr: ${{ steps.create_pr.outputs.celestia_internal_tools_pr}}
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v3"
+      - name: Configure git
+        run: |
+          git config --global url."https://${{ env.TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global user.email "devops@celestia.org"
+          git config --global user.name "autodevops"
+      - name: Clone Repo
+        run: |
+          git clone https://github.com/${{ env.ORG_NAME }}/${{ env.REPO_NAME }}.git
+          cd ${{ env.REPO_NAME }}
+          git fetch; git pull
+      - name: Create the branch
+        run: |
+          cd ${{ env.REPO_NAME }}
+          git checkout -b autodevops/${{ github.event.inputs.chain-id }}
+      - name: Run scripts
+        run: |
+          cd ${{ env.REPO_NAME }}
+          ./scripts/grafana_auto_devops.sh ${{ github.event.inputs.chain-id }}
+      - name: Commit & Push the new resources
+        run: |
+          cd ${{ env.REPO_NAME }}
+          git branch
+          git add .
+          git commit -m "Resources added for the new Chain-id added: [${{ github.event.inputs.chain-id }}]"
+          git push origin autodevops/${{ github.event.inputs.chain-id }}
+      - name: Create PR
+        id: create_pr
+        env:
+          GITHUB_TOKEN: ${{ env.TOKEN }}
+        run: |
+          cd ${{ env.REPO_NAME }}
+          pr_number=$(gh pr create --base main \
+                       --head autodevops/${{ github.event.inputs.chain-id }} \
+                       --title "AutoDevOps: New ChainID -> [${{ github.event.inputs.chain-id }}]" \
+                       --body "Hello DevOps! Let's setup the new resources for the new chain-id: [${{ github.event.inputs.chain-id }}]" \
+                       --label "devops,automation,enhancement" \
+                       --repo https://github.com/${{ env.ORG_NAME }}/${{ env.REPO_NAME }})
+          # Get only the PR id
+          echo "celestia_internal_tools_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
+          echo "pr_number=$(echo $pr_number|rev|cut -d'/' -f1|rev)" >> $GITHUB_OUTPUT
+      - name: Update The Assignees
+        env:
+          GITHUB_TOKEN: ${{ env.TOKEN }}
+        run: |
+          pr_number=${{ steps.create_pr.outputs.pr_number }}
+          assignees=${{ env.DEVOPS_ASSIGNEES }}
+          for assignee in "${assignees[@]}"; do
+            for i in "assignee" "reviewer"; do
+              gh pr edit $pr_number --add-$i $assignee --repo ${{ env.ORG_NAME }}/${{ env.REPO_NAME }}
+            done
+          done
+
+# ----------------------------------------------------------------------------
+   summary:
+    needs: ["argocd-apps","celestia-stack-internal","celestia-internal-tools"]
+    runs-on: "ubuntu-latest"
+    env:
+     OUTPUT_ARGOCD_APP_PR: ${{ needs.argocd-apps.outputs.output-argocd-apps-pr }}
+     OUTPUT_CELESTIA_STACK_INTERNAL: ${{ needs.celestia-stack-internal.outputs.output-celestia-stack-internal-pr }}
+     OUTPUT_CELESTIA_INTERNAL_TOOLS: ${{ needs.celestia-internal-tools.outputs.output-celestia-internal-tools-pr }}
+    steps:
+      - name: PRs summary
+        run: |
+          echo "ArgoCD-Apps PR: [${{ env.OUTPUT_ARGOCD_APP_PR }}]"
+          echo "Celestia Stack Internal PR: [${{ env.OUTPUT_CELESTIA_STACK_INTERNAL }}]"
+          echo "Celestia Internal Tools PR: [${{ env.OUTPUT_CELESTIA_INTERNAL_TOOLS }}]"
