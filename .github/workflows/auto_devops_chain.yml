@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: PRs summary
         run: |
-          if [ "${{ github.event.inputs.chain-id }}" != "" ];then
+          if [ "${{ github.event.inputs.chain-id }}" != "" ]; then
             echo "Name defined"
             echo ${{ github.event.inputs.chain-id }}
           else
