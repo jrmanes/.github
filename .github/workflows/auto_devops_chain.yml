@@ -44,7 +44,9 @@ jobs:
 
           else
             echo "The input is not empty."
+            CHAIN_NAME=$(echo "${{ github.event.inputs.chain-id }}")
           fi
+          echo "full name will be: [${CHAIN_NAME}]"
 
           # Get only the PR id
           #echo "celestia_internal_tools_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
