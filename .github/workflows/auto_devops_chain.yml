@@ -6,7 +6,7 @@ on:
       chain-id:
         required: false
         type: string
-        description: What's the name of the new Chain?, if you leave it empty, the default value will be like [app-v100-node-v0110]
+        description: Chain-ID name?, if you leave it empty, the default value will be like [app-v100-node-v0110]
       app_version:
         required: true
         type: string
