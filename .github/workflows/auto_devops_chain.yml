@@ -25,15 +25,32 @@ jobs:
      OUTPUT_ARGOCD_APP_PR: ${{ needs.argocd-apps.outputs.output-argocd-apps-pr }}
      OUTPUT_CELESTIA_STACK_INTERNAL: ${{ needs.celestia-stack-internal.outputs.output-celestia-stack-internal-pr }}
      OUTPUT_CELESTIA_INTERNAL_TOOLS: ${{ needs.celestia-internal-tools.outputs.output-celestia-internal-tools-pr }}
+    outputs:
+      output-chain-id: ${{ steps.create_pr.outputs.celestia_internal_tools_pr}}
     steps:
       - name: PRs summary
         run: |
           if [ -z "${{ github.event.inputs.chain-id }}" ]; then
           #if [ "${{ github.event.inputs.chain-id }}" != "" ]; then
             echo "The input is empty."
+            #chain-id-name=
+            APP_VERSION=$(echo ${{ github.event.inputs.app_version }})
+            NODE_VERSION=$(echo ${{ github.event.inputs.node_version }})
+            echo $APP_VERSION
+            echo $NODE_VERSION
+
+            # Get only the PR id
+            #echo "outputcelestia_internal_tools_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
+            #echo "pr_number=$(echo $pr_number|rev|cut -d'/' -f1|rev)" >> $GITHUB_OUTPUT
+
           else
             echo "The input is not empty."
           fi
+
+          # Get only the PR id
+          #echo "celestia_internal_tools_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
+          #echo "pr_number=$(echo $pr_number|rev|cut -d'/' -f1|rev)" >> $GITHUB_OUTPUT
+
           #if [ "${{ github.event.inputs.chain-id }}" != "" ]; then
           #  echo "Name defined"
           #  echo ${{ github.event.inputs.chain-id }}
