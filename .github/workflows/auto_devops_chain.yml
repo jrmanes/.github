@@ -21,32 +21,40 @@ on:
 jobs:
    prepare-env:
     runs-on: "ubuntu-latest"
-    env:
-     OUTPUT_ARGOCD_APP_PR: ${{ needs.argocd-apps.outputs.output-argocd-apps-pr }}
-     OUTPUT_CELESTIA_STACK_INTERNAL: ${{ needs.celestia-stack-internal.outputs.output-celestia-stack-internal-pr }}
-     OUTPUT_CELESTIA_INTERNAL_TOOLS: ${{ needs.celestia-internal-tools.outputs.output-celestia-internal-tools-pr }}
+    #env:
+    # OUTPUT_ARGOCD_APP_PR: ${{ needs.argocd-apps.outputs.output-argocd-apps-pr }}
+    # OUTPUT_CELESTIA_STACK_INTERNAL: ${{ needs.celestia-stack-internal.outputs.output-celestia-stack-internal-pr }}
+    # OUTPUT_CELESTIA_INTERNAL_TOOLS: ${{ needs.celestia-internal-tools.outputs.output-celestia-internal-tools-pr }}
     outputs:
-      output-chain-id: ${{ steps.create_pr.outputs.celestia_internal_tools_pr}}
+      output-chain-id: ${{ steps.prepare_env.outputs.chain_name }}
     steps:
       - name: Prepare Environment
+        id: prepare_env
         run: |
           if [ -z "${{ github.event.inputs.chain-id }}" ]; then
             echo "The input is empty."
-            #chain-id-name=
             APP_VERSION=$(echo ${{ github.event.inputs.app_version }} | tr -d '.' | tr '_' '-')
             NODE_VERSION=$(echo ${{ github.event.inputs.node_version }} | tr -d '.' | tr '_' '-')
             CHAIN_NAME=$(echo "app-${APP_VERSION}-node-${NODE_VERSION}")
-            echo "full name will be: [${CHAIN_NAME}]"
-
-            # Get only the PR id
-            #echo "outputcelestia_internal_tools_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
-            #echo "pr_number=$(echo $pr_number|rev|cut -d'/' -f1|rev)" >> $GITHUB_OUTPUT
-
           else
             echo "The input is not empty."
             CHAIN_NAME=$(echo "${{ github.event.inputs.chain-id }}")
           fi
-          echo "full name will be: [${CHAIN_NAME}]"
+
+          # Get only the PR id
+          echo "output_chain_name=$(echo $CHAIN_NAME)" >> $GITHUB_OUTPUT
+
+   check-env:
+    needs: ["prepare-env"]
+    runs-on: "ubuntu-latest"
+    env:
+      OUTPUT_CHAIN_NAME: ${{ needs.prepare-env.outputs.output-chain-id }}
+    steps:
+      - name: Prepare Environment
+        id: prepare_env
+        run: |
+          echo "Chain name: [${{ env.OUTPUT_CHAIN_NAME }}]"
+          echo "full name will be: [${{ env.OUTPUT_CHAIN_NAME }}]"
 
           # Get only the PR id
           #echo "celestia_internal_tools_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
