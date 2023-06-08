@@ -34,10 +34,11 @@ jobs:
           #if [ "${{ github.event.inputs.chain-id }}" != "" ]; then
             echo "The input is empty."
             #chain-id-name=
-            APP_VERSION=$(echo ${{ github.event.inputs.app_version }})
-            NODE_VERSION=$(echo ${{ github.event.inputs.node_version }})
+            APP_VERSION=$(echo ${{ github.event.inputs.app_version }} | tr -d '.')
+            NODE_VERSION=$(echo ${{ github.event.inputs.node_version }} | tr -d '.')
             echo "app version $APP_VERSION"
             echo "node version $NODE_VERSION"
+            echo "full name will be: [app-${APP_VERSION}-node-${NODE_VERSION}]"
 
 
             # Get only the PR id
