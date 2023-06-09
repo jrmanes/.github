@@ -58,6 +58,8 @@ jobs:
         run: |
           echo "Full name will be: [${{ env.OUTPUT_CHAIN_NAME }}]"
           echo "Name length: [$(expr length '${{ env.OUTPUT_CHAIN_NAME }}')]"
+          echo "App Version: [${{ github.event.inputs.app_version }}]"
+          echo "Node Version: [${{ github.event.inputs.node_version }}]"
 
 # ----------------------------------------------------------------------------
    argocd-apps:
