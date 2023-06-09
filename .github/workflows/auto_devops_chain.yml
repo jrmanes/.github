@@ -31,8 +31,8 @@ jobs:
             echo "Generating the default name to the chain..."
 
             # Modify app version and node version by replacing '.' with '' and '_' with '-'
-            APP_VERSION=$(echo ${{ github.event.inputs.app_version }} | tr -d '.' | tr '_' '-')
-            NODE_VERSION=$(echo ${{ github.event.inputs.node_version }} | tr -d '.' | tr '_' '-')
+            APP_VERSION=$(echo ${{ github.event.inputs.app_version }} | tr -d '. ' | tr '_' '-')
+            NODE_VERSION=$(echo ${{ github.event.inputs.node_version }} | tr -d '. ' | tr '_' '-')
 
             # Generate chain name using modified app and node versions
             CHAIN_NAME=$(echo "app-${APP_VERSION}-node-${NODE_VERSION}")
