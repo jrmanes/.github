@@ -26,7 +26,7 @@ jobs:
     # OUTPUT_CELESTIA_STACK_INTERNAL: ${{ needs.celestia-stack-internal.outputs.output-celestia-stack-internal-pr }}
     # OUTPUT_CELESTIA_INTERNAL_TOOLS: ${{ needs.celestia-internal-tools.outputs.output-celestia-internal-tools-pr }}
     outputs:
-      output-chain-id: ${{ steps.prepare_env.outputs.chain_name }}
+      output-chain-id: ${{ steps.prepare_env.outputs.output_chain_name }}
     steps:
       - name: Prepare Environment
         id: prepare_env
@@ -40,6 +40,9 @@ jobs:
             echo "The input is not empty."
             CHAIN_NAME=$(echo "${{ github.event.inputs.chain-id }}")
           fi
+          echo "-----"
+          echo $CHAIN_NAME
+          echo "-----"
 
           # Get only the PR id
           echo "output_chain_name=$(echo $CHAIN_NAME)" >> $GITHUB_OUTPUT
