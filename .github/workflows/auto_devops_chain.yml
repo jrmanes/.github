@@ -21,10 +21,6 @@ on:
 jobs:
    prepare-env:
     runs-on: "ubuntu-latest"
-    #env:
-    # OUTPUT_ARGOCD_APP_PR: ${{ needs.argocd-apps.outputs.output-argocd-apps-pr }}
-    # OUTPUT_CELESTIA_STACK_INTERNAL: ${{ needs.celestia-stack-internal.outputs.output-celestia-stack-internal-pr }}
-    # OUTPUT_CELESTIA_INTERNAL_TOOLS: ${{ needs.celestia-internal-tools.outputs.output-celestia-internal-tools-pr }}
     outputs:
       output-chain-id: ${{ steps.prepare_env.outputs.output_chain_name }}
     steps:
@@ -32,18 +28,24 @@ jobs:
         id: prepare_env
         run: |
           if [ -z "${{ github.event.inputs.chain-id }}" ]; then
-            echo "The input is empty."
+            echo "Generating the default name to the chain..."
+
+            # Modify app version and node version by replacing '.' with '' and '_' with '-'
             APP_VERSION=$(echo ${{ github.event.inputs.app_version }} | tr -d '.' | tr '_' '-')
             NODE_VERSION=$(echo ${{ github.event.inputs.node_version }} | tr -d '.' | tr '_' '-')
+
+            # Generate chain name using modified app and node versions
             CHAIN_NAME=$(echo "app-${APP_VERSION}-node-${NODE_VERSION}")
           else
-            echo "The input is not empty."
+            echo "Using the chain-id name from the input..."
+            # Assign chain name directly from the input
             CHAIN_NAME=$(echo "${{ github.event.inputs.chain-id }}")
           fi
-
-          # Get only the PR id
+          # Output the chain name to the specified output file
           echo "output_chain_name=$(echo $CHAIN_NAME)" >> $GITHUB_OUTPUT
 
+## ----------------------------------------------------------------------------
+#
    check-env:
     needs: ["prepare-env"]
     runs-on: "ubuntu-latest"
@@ -53,8 +55,8 @@ jobs:
       - name: Prepare Environment
         id: prepare_env
         run: |
-          echo "full name will be: [${{ env.OUTPUT_CHAIN_NAME }}]"
-          echo "name length: [$(expr length '${{ env.OUTPUT_CHAIN_NAME }}')]"
+          echo "Full name will be: [${{ env.OUTPUT_CHAIN_NAME }}]"
+          echo "Name length: [$(expr length '${{ env.OUTPUT_CHAIN_NAME }}')]"
 
 ## ----------------------------------------------------------------------------
 #   argocd-apps:
