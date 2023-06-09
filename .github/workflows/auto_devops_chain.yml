@@ -39,7 +39,7 @@ jobs:
           else
             echo "Using the chain-id name from the input..."
             # Assign chain name directly from the input
-            CHAIN_NAME=$(echo "${{ github.event.inputs.chain-id }}")
+            CHAIN_NAME=$(echo "${{ github.event.inputs.chain-id }} | tr -d '. '")
           fi
           # Output the chain name to the specified output file
           echo "output_chain_name=$(echo $CHAIN_NAME)" >> $GITHUB_OUTPUT
