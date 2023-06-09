@@ -6,7 +6,7 @@ on:
       chain-id:
         required: false
         type: string
-        description: Chain-ID name?, if you leave it empty, the default name will be like [app-v100-node-v0110]
+        description: Chain-ID name?, if you leave it empty, the default name will be like [app-vXXX-node-vXXX]
       app_version:
         required: true
         type: string
@@ -54,22 +54,7 @@ jobs:
         id: prepare_env
         run: |
           echo "full name will be: [${{ env.OUTPUT_CHAIN_NAME }}]"
-
-          # Get only the PR id
-          #echo "celestia_internal_tools_pr=$(echo $pr_number)" >> $GITHUB_OUTPUT
-          #echo "pr_number=$(echo $pr_number|rev|cut -d'/' -f1|rev)" >> $GITHUB_OUTPUT
-
-          #if [ "${{ github.event.inputs.chain-id }}" != "" ]; then
-          #  echo "Name defined"
-          #  echo ${{ github.event.inputs.chain-id }}
-          #else
-          #  echo "Name NOT defined"
-          #  echo ${{ github.event.inputs.chain-id }}
-          #fi
-          #echo ${{ github.event.inputs.chain-id }}
-          #echo "ArgoCD-Apps PR: [${{ env.OUTPUT_ARGOCD_APP_PR }}]"
-          #echo "Celestia Stack Internal PR: [${{ env.OUTPUT_CELESTIA_STACK_INTERNAL }}]"
-          #echo "Celestia Internal Tools PR: [${{ env.OUTPUT_CELESTIA_INTERNAL_TOOLS }}]"
+          echo "name length: [$(expr length '${{ env.OUTPUT_CHAIN_NAME }}')]"
 
 ## ----------------------------------------------------------------------------
 #   argocd-apps:
