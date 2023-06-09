@@ -40,9 +40,6 @@ jobs:
             echo "The input is not empty."
             CHAIN_NAME=$(echo "${{ github.event.inputs.chain-id }}")
           fi
-          echo "-----"
-          echo $CHAIN_NAME
-          echo "-----"
 
           # Get only the PR id
           echo "output_chain_name=$(echo $CHAIN_NAME)" >> $GITHUB_OUTPUT
@@ -56,7 +53,6 @@ jobs:
       - name: Prepare Environment
         id: prepare_env
         run: |
-          echo "Chain name: [${{ env.OUTPUT_CHAIN_NAME }}]"
           echo "full name will be: [${{ env.OUTPUT_CHAIN_NAME }}]"
 
           # Get only the PR id
