@@ -294,7 +294,6 @@ jobs:
     steps:
       - name: PRs summary
         run: |
-          echo "Name for the new Chain: [${{ env.OUTPUT_CHAIN_NAME }}]"
           echo "ArgoCD-Apps PR: [${{ env.OUTPUT_ARGOCD_APP_PR }}]"
           echo "Celestia Stack Internal PR: [${{ env.OUTPUT_CELESTIA_STACK_INTERNAL }}]"
           echo "Celestia Internal Tools PR: [${{ env.OUTPUT_CELESTIA_INTERNAL_TOOLS }}]"
