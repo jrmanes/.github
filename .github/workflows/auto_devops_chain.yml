@@ -72,7 +72,7 @@ jobs:
     env:
       TOKEN: ${{ secrets.ACCESS_TOKEN }}
       GITHUB_TOKEN: ${{ github.token }}
-        #ORG_NAME: "celestiaorg"
+      #ORG_NAME: "celestiaorg"
       ORG_NAME: "jrmanes"
       REPO_NAME: "argocd-apps"
       DEVOPS_ASSIGNEES: ("Bidon15" "sysrex" "jrmanes" "smuu")
