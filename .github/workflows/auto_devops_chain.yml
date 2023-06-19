@@ -82,11 +82,11 @@ jobs:
     steps:
       - name: Checkout
         uses: "actions/checkout@v3"
-      #- name: Configure git
-      #  run: |
-      #    git config --global url."https://${{ env.TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-      #    git config --global user.email "devops@celestia.org"
-      #    git config --global user.name "autodevops"
+      - name: Configure git
+        run: |
+          git config --global url."https://${{ env.TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global user.email "jose@celestia.org"
+          git config --global user.name "jose"
       - name: Clone Repo
         run: |
           git clone https://github.com/${{ env.ORG_NAME }}/${{ env.REPO_NAME }}.git
