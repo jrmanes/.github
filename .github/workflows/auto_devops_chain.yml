@@ -72,8 +72,7 @@ jobs:
     env:
       TOKEN: ${{ secrets.ACCESS_TOKEN }}
       GITHUB_TOKEN: ${{ github.token }}
-      #ORG_NAME: "celestiaorg"
-      ORG_NAME: "jrmanes"
+      ORG_NAME: "celestiaorg"
       REPO_NAME: "argocd-apps"
       DEVOPS_ASSIGNEES: ("Bidon15" "sysrex" "jrmanes" "smuu")
       OUTPUT_CHAIN_NAME: ${{ needs.prepare-env.outputs.output-chain-id }}
@@ -85,8 +84,8 @@ jobs:
       - name: Configure git
         run: |
           git config --global url."https://${{ env.TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-          git config --global user.email "jose@celestia.org"
-          git config --global user.name "jose"
+          git config --global user.email "devops@celestia.org"
+          git config --global user.name "autodevops"
       - name: Clone Repo
         run: |
           git clone https://github.com/${{ env.ORG_NAME }}/${{ env.REPO_NAME }}.git
@@ -106,8 +105,8 @@ jobs:
           git branch
           git add .
           git commit -m "Resources added for the new Chain-id added: [${{ env.OUTPUT_CHAIN_NAME }}]"
-          #git push origin autodevops/${{ env.OUTPUT_CHAIN_NAME }}
           git push
+          #git push origin autodevops/${{ env.OUTPUT_CHAIN_NAME }}
       #- name: Create PR
       #  id: create_pr
       #  env:
