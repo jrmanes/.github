@@ -90,9 +90,6 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
   docker-build:
-    strategy:
-      matrix:
-        platforms: ["linux/amd64","linux/arm64"]
     runs-on: "ubuntu-latest"
     # wait until the jobs are finished.
     needs: ["prepare-env", "docker-security"]
@@ -128,7 +125,7 @@ jobs:
           tags: |
             # output minimal (short sha)
             type=raw,value={{sha}}
-            # output v0.2.1/v*-*
+            # output v0.2.1/v*-* (or sha of no tag)
             type=semver,pattern={{raw}}
             # pull request event
             type=ref,enable=true,prefix=pr-,suffix=,event=pr
@@ -139,19 +136,19 @@ jobs:
 
       # We always build the image but we only push if we are on the `main`,
       # `master` branch or a versioned `v*` branch
-      - name: Build and PushDocker Image
+      - name: Build and Push Docker Image (amd64 and arm64)
         uses: docker/build-push-action@v4
+        # yamllint disable
+        # only run when the branch is main, master or starts with v*
+        # if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
+        # yamllint enable
         env:
           OUTPUT_SHORT_SHA: ${{ needs.prepare-env.outputs.output_short_sha }}
           OUTPUT_IMAGE_NAME: ${{ needs.prepare-env.outputs.output_image_name }}
         with:
-          platforms: ${{ matrix.platform }}
-          # yamllint disable
-          # The following line, is execute as an if statement, only push when
-          # the branch is main, master or starts with v*
-          #push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') }}
+          context: .
+          platforms: linux/amd64,linux/arm64
           push: true
-          # yamllint enable
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ inputs.dockerfile }}
